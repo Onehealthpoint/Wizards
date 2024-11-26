@@ -1,37 +1,36 @@
-### Start with cloning the git repo ###
+# Start with cloning the git repo #
 Run the following command in a terminal within your prefered directory. That is where the clone will be downloaded.
 ```bash
     git clone https://github.com/Onehealthpoint/Wizards.git
 ```
  
-# Pull Latest Updates #
+### Pull Latest Updates ###
 Always pull the latest changes before starting work:
 ```bash
     git pull origin main
 ```
 
-# Create a New Branch for Features #
+### Create a New Branch for Features ###
 Create and switch to a new branch for their feature or fix:
 ```bash
     git checkout -b feature-name
 ```
 
-# Commit Changes #
+### Commit Changes ###
 After making changes, stage and commit them:
 ```bash
     git add .
     git commit -m "Description of the changes"
 ```
 
-# Push to the Remote Branch #
+### Push to the Remote Branch ###
 Push their changes to the remote repository
 ```bash
     git push origin feature-name
 ```
 
-### Setup local environment ###
-```bash
-    git clone 
+# Setup local environment #
+```bash 
     cd Wizards
     npm install tailwindcss postcss-cli autoprefixer -D
     npx tailwind init tailwind.js --full
