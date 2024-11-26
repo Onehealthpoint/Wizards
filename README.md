@@ -90,7 +90,8 @@ Import "main.css" in "index.js":
 
 # Run App #
 Run the following command:
+```bash
     npm start
-
+```
 # More changes may occur so please stay up to date. You may approach your team leader for any queries.
 # Firebase, Routing, StateManagement is yet to be implemented.
