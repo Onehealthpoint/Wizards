@@ -30,6 +30,3 @@ yarn-error.log*
 .firebase
 .firebase/
 
-# github
-.github
-.github/
