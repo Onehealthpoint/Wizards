@@ -25,3 +25,10 @@ yarn-error.log*
 
 # visual studio code
 .vs/
+
+# firebase
+.firebase
+.firebase/
+
+# github
+.github/
