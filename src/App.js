@@ -1,6 +1,7 @@
 // Imports for Firebase
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
+import { getAuth } from "firebase/auth";
 
 // Imports for Routing
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -30,6 +31,7 @@ const firebaseConfig = {
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+const auth = getAuth(app);
 
 console.log(app, analytics);
 
@@ -42,7 +44,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/category" element={<CategoryPage />} />
           <Route path="/cart" element={<CartPage />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage auth={auth}/>} />
           <Route path="/payment" element={<PaymentPage />} />
         </Routes>
       </Router>
