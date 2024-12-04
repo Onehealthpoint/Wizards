@@ -1,6 +1,16 @@
+// Imports for Firebase
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 
+// Imports for Routing
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+
+// Imports for Web-Pages
+import CartPage from "./pages/CartPage";
+import CategoryPage from "./pages/CategoryPage";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import PaymentPage from "./pages/PaymentPage";
 
 // TO Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -27,7 +37,15 @@ console.log(app, analytics);
 function App() {
   return (
     <div>
-          <h1 className="text-xl font-bold"> Hello </h1>
+      <Router>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/category" element={<CategoryPage />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/payment" element={<PaymentPage />} />
+        </Routes>
+      </Router>
     </div>
   );
 }
