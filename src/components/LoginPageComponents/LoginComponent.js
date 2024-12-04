@@ -1,7 +1,9 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { useState, useCallback } from 'react';
 
-const LoginComponent = ({auth, user}) => {
+// Cleanup alert message to be user specific. It currently shows the error message from Firebase directly.
+
+const LoginComponent = ({auth}) => {
     const [hasAccount, setHasAccount] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -11,6 +13,7 @@ const LoginComponent = ({auth, user}) => {
             e.preventDefault();
             try {
                 const user = await signInWithEmailAndPassword(auth, email, password);
+                console.log(user);
             } catch (error) {
                 console.error(error.message);
                 alert(error.message);
@@ -24,6 +27,7 @@ const LoginComponent = ({auth, user}) => {
             e.preventDefault();
             try {
                 const user = await createUserWithEmailAndPassword(auth, email, password);
+                console.log(user);
             } catch (error) {
                 console.error(error.message);
                 alert(error.message);
@@ -37,6 +41,7 @@ const LoginComponent = ({auth, user}) => {
             try {
                 const provider = new GoogleAuthProvider();
                 const user = await signInWithPopup(auth, provider);
+                console.log(user);
             } catch (error) {
                 console.error(error.message);
                 alert(error.message);
