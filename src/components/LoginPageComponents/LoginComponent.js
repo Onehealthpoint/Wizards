@@ -73,7 +73,7 @@ const LoginComponent = ({auth}) => {
                             value={email}/>
                         <label htmlFor="password">password</label>
                         <input 
-                            className=""
+                            className="ohh nice tailwind"
                             type="password" 
                             name="password" 
                             id="password"
