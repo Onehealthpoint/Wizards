@@ -1,7 +1,7 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { useState, useCallback } from 'react';
 
-// Test by kushala after organization
+// Test by jaina after organization
 
 // Cleanup alert message to be user specific. It currently shows the error message from Firebase directly.
 
