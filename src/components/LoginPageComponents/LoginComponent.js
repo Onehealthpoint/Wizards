@@ -1,11 +1,14 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { auth } from "../Firebase/Auth";
 import { useState, useCallback } from 'react';
 
 // Test by jaina after organization
 
 // Cleanup alert message to be user specific. It currently shows the error message from Firebase directly.
 
-const LoginComponent = ({auth}) => {
+const LoginComponent = () => {
+    const [LoggedIn, setLoggedIn] = useState(false);
+
     const [hasAccount, setHasAccount] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -15,13 +18,12 @@ const LoginComponent = ({auth}) => {
             e.preventDefault();
             try {
                 const user = await signInWithEmailAndPassword(auth, email, password);
-                console.log(user);
+                console.log(user.user.toJSON);
             } catch (error) {
-                console.error(error.message);
-                alert(error.message);
+                console.error("LoginComponent.js ==> Login Error: ", error.message);
             }
         },
-        [auth, email, password]
+        [email, password]
     );
 
     const handleSignup = useCallback(
@@ -29,13 +31,13 @@ const LoginComponent = ({auth}) => {
             e.preventDefault();
             try {
                 const user = await createUserWithEmailAndPassword(auth, email, password);
-                console.log(user);
+                console.log(user.user.toJSON);
+
             } catch (error) {
-                console.error(error.message);
-                alert(error.message);
+                console.error("LoginComponent.js ==> Signup Error: ",error.message);
             }
         },
-        [auth, email, password]
+        [email, password]
     );
 
     const handleGoogleLogin = useCallback(
@@ -43,13 +45,11 @@ const LoginComponent = ({auth}) => {
             try {
                 const provider = new GoogleAuthProvider();
                 const user = await signInWithPopup(auth, provider);
-                console.log(user);
+                console.log(user.user.toJSON);
             } catch (error) {
-                console.error(error.message);
-                alert(error.message);
+                console.error("LoginComponent.js ==> Google Login Error: ",error.message);
             }
-        }, 
-        [auth]
+        }, []
     );
 
     const toggleHasAccount = useCallback(() => {
