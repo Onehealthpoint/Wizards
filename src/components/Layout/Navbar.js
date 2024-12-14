@@ -18,7 +18,7 @@ const Navbar = () => {
             </li>
 
             <li>
-                <Link to={'/'}>Kamal</Link>
+                <Link to={'/'}>User</Link>
             </li>
 
             {/* <li>
