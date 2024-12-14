@@ -1,8 +1,8 @@
 import LoginComponent from "../components/LoginPageComponents/LoginComponent";
 
-const LoginPage = ({auth}) => {
+const LoginPage = () => {
     return (
-         <LoginComponent auth={auth}/>
+            <LoginComponent />
     );
 };
 
