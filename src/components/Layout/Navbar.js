@@ -38,7 +38,7 @@ const Navbar = () => {
     );
 
     return (
-        <nav className="bg-purple-600 sticky top-0">
+        <nav className="bg-purple-600 sticky top-0 z-50">
             <div className="lg:flex lg:justify-between items-center py-3 lg:px-3 ">
                 <div className="left py-3 lg:py-0">
                     <Link to={'/'}>
