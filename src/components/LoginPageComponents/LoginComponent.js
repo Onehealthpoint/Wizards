@@ -2,8 +2,6 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithP
 import { auth } from "../Firebase/Auth";
 import { useState, useCallback } from 'react';
 
-// Test by jaina after organization
-
 // Cleanup alert message to be user specific. It currently shows the error message from Firebase directly.
 
 
@@ -152,6 +150,5 @@ const LoginComponent = () => {
         </div>
     );
 };
-
 
 export default LoginComponent;

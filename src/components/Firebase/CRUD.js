@@ -6,7 +6,7 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 
 // ============================================
 // Remove testUID on production code
-const UID = "sadik123456";
+let UID = "sadik123456";
 // Add UID import
 // ============================================
 
@@ -66,9 +66,8 @@ export const FetchCart = async () => {
             if(querySnapshot.size !== 0) {
                 books.push([querySnapshot.docs[0].data(), doc.data().quantity]);
             }
-            console.log(doc.data());
             console.log(books);
-            console.log(doc.data().quantity);
+            console.log(doc.data());
         }
         return books || [];
     }catch(e){

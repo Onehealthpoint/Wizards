@@ -7,12 +7,10 @@ const CartComponent = () => {
     const [loading, setLoading] = useState(true); 
     const [error, setError] = useState(null);
 
-    const TestUID = "sadik123456"
-
     useEffect(() => {
         const fetchCartData = async () => {
             try {
-                const data = await FetchCart(TestUID);
+                const data = await FetchCart();
                 setCartedBooks(data || []);
             } catch (e) {
                 setError("Failed to fetch cart data");
@@ -24,7 +22,6 @@ const CartComponent = () => {
 
     useEffect(() => {
         if(cartedBooks.length > 0) setLoading(false);
-        console.log("Carted Books: ", cartedBooks);
     }, [cartedBooks]);
 
     if (loading) return <p>Loading...</p>;
@@ -34,10 +31,10 @@ const CartComponent = () => {
     return(
         <>
         {cartedBooks.length > 0 ? (
-            <div className="container">
-                <div className="row">
+            <div className="container w-screen mx-auto">
+                <div className="w-full mx-auto">
                     {cartedBooks.map((bookObj) => (
-                        <CartItemCard key={bookObj.id} book={bookObj} />
+                        <CartItemCard key={bookObj[0].id} book={bookObj} />
                     ))}
                 </div>
             </div>
