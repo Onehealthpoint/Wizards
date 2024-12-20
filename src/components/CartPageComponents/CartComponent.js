@@ -1,20 +1,51 @@
-import { UID } from "../Firebase/Auth";
-import { readData } from "../Firebase/CRUD";
-import { where } from "firebase/firestore";
+import { useState, useEffect } from "react";
+import { FetchCart } from "../Firebase/CRUD";
 import CartItemCard from "./CartItemCard";
 
 const CartComponent = () => {
-    const cartedBooks = readData("Carts").where("UID", "==", UID);
+    const [cartedBooks, setCartedBooks] = useState([]); 
+    const [loading, setLoading] = useState(true); 
+    const [error, setError] = useState(null);
 
-    return (
-        <div className="container mx-auto">
-            <h1 className="text-2xl font-bold text-center mt-10">Cart Page</h1>
-            {
-                cartedBooks.forEach(book => {
-                    <CartItemCard book={book} />
-                })
+    useEffect(() => {
+        const fetchCartData = async () => {
+            try {
+                const data = await FetchCart();
+                setCartedBooks(data || []);
+            } catch (e) {
+                setError("Failed to fetch cart data");
+                console.error("Error FetchCart: ", e);
             }
-        </div>
+        };
+        fetchCartData();
+    }, []);
+
+    useEffect(() => {
+        if(cartedBooks.length > 0) setLoading(false);
+    }, [cartedBooks]);
+
+    if (loading) return <p>Loading...</p>;
+
+    if (error) return <p>Error: {error}</p>;
+
+    return(
+        <>
+        {cartedBooks.length > 0 ? (
+            <div className="container w-screen mx-auto">
+                <div className="w-full mx-auto">
+                    {cartedBooks.map((bookObj) => (
+                        <CartItemCard key={bookObj[0].id} book={bookObj} />
+                    ))}
+                </div>
+            </div>
+        ) : (
+            <div className="container">
+                <div className="row">
+                    <h2>Cart is Empty</h2>
+                </div>
+            </div>
+        )}
+        </>
     );
 };
 

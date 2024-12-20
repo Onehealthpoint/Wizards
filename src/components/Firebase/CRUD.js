@@ -1,52 +1,186 @@
 import app from './Init';
-import { getFirestore, collection, getDocs, doc, setDoc, updateDoc, deleteDoc, where } from "firebase/firestore";
+import { getFirestore } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
+// import { UID } from './Auth';
+
+
+// ============================================
+// Remove testUID on production code
+let UID = "sadik123456";
+// Add UID import
+// ============================================
+
 
 const db = getFirestore(app);
 
-export const readData = async (collectionName) => {
+export const SearchBooksByTitle = async (title) => {
     try{
-        const querySnapshot = await getDocs(collection(db, collectionName));
-        const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        return data;
-    }catch(error){
-        console.error("CRUD.js ==> Read Data Error: ", error);
+        const books = [];
+        const q = query(collection(db, "Books"), where("title", "==", title));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            books.push(doc.data());
+        });
+        return books;
+    }catch(e){
+        console.error("Error CRUD:SearchBooksByTitle ==> ", e);
     }
 };
 
-export const setData = async (collectionName, data, id) => {
+export const SearchBooksByAuthor = async (author) => {
     try{
-        await setDoc(doc(db, collectionName, id), data);
-    }catch(error){
-        console.error("CRUD.js ==> Set Data Error: ", error);
+        const books = [];
+        const q = query(collection(db, "Books"), where("author", "==", author));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            books.push(doc.data());
+        });
+        return books;
+    }catch(e){
+        console.error("Error CRUD:SearchBooksByAuthor ==> ", e);
+    }
+};
+
+export const SearchBooksByGenre = async (genre) => {
+    try{
+        const books = [];
+        const q = query(collection(db, "Books"), where("genre", "array-contains", genre));
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            books.push(doc.data());
+        });
+        return books;
+    }catch(e){
+        console.error("Error CRUD:SearchBooksByGenre ==> ", e);
+    }
+};
+
+export const FetchCart = async () => {
+    try{
+        const books = [];
+        const q = query(collection(db, "Carts"), where("UID", "==", UID));
+        const cartQuerySnapshot = await getDocs(q);
+        for(const doc of cartQuerySnapshot.docs){
+            let bookQuery = query(collection(db, "Books"), where("id", "==", doc.data().bookId));
+            const querySnapshot = await getDocs(bookQuery);
+            if(querySnapshot.size !== 0) {
+                books.push([querySnapshot.docs[0].data(), doc.data().quantity]);
+            }
+            console.log(books);
+            console.log(doc.data());
+        }
+        return books || [];
+    }catch(e){
+        console.error("Error CRUD:FetchCart ==> ", e);
+    }
+    return [];
+};
+
+export const AddToCart = async (bookId, qty) => {
+    try{
+        const q = query(collection(db, "Carts"), where("UID", "==", UID), where("bookId", "==", bookId));
+        const cartQuerySnapshot = await getDocs(q);
+        if(cartQuerySnapshot.size !== 0){
+            console.log("Book already in cart");
+            return;
+        }
+        await db.collection("Carts").add({
+            UID: UID,
+            bookId: bookId,
+            quantity: qty
+        });
+    }catch(e){
+        console.error("Error CRUD:AddToCart ==> ", e);
+    }
+};
+
+export const RemoveFromCart = async (bookId) => {
+    try{
+        const q = query(collection(db, "Carts"), where("UID", "==", UID), where("bookId", "==", bookId));
+        const cartQuerySnapshot = await getDocs(q);
+        if(cartQuerySnapshot.size === 0){
+            console.log("Book not in cart");
+            return;
+        }
+        cartQuerySnapshot.forEach((doc) => {
+            db.collection("Carts").doc(doc.id).delete();
+        });
+    }catch(e){
+        console.error("Error CRUD:RemoveFromCart ==> ", e);
+    }
+};
+
+export const UpdateCart = async (bookId, qty) => {
+    try{
+        const q = query(collection(db, "Carts"), where("UID", "==", UID), where("bookId", "==", bookId));
+        const cartQuerySnapshot = await getDocs(q);
+        if(cartQuerySnapshot.size === 0){
+            console.log("Book not in cart");
+            return;
+        }
+        cartQuerySnapshot.forEach((doc) => {
+            db.collection("Carts").doc(doc.id).update({
+                quantity: qty
+            });
+        });
+    }catch(e){
+        console.error("Error CRUD:UpdateCart ==> ", e);
+    }
+};
+
+export const AddToWishlist = async (bookId) => {
+    try{
+        const q = query(collection(db, "Wishlists"), where("UID", "==", UID), where("bookId", "==", bookId));
+        const wishlistQuerySnapshot = await getDocs(q);
+        if(wishlistQuerySnapshot.size !== 0){
+            console.log("Book already in wishlist");
+            return;
+        }
+        await db.collection("Wishlists").add({
+            UID: UID,
+            bookId: bookId
+        });
+    }catch(e){
+        console.error("Error CRUD:AddToWishlist ==> ", e);
     }
 }
 
-export const updateData = async (collectionName, id, data) => {
+export const RemoveFromWishlist = async (bookId) => {
     try{
-        await updateDoc(doc(db, collectionName, id), data);
-    }catch(error){
-        console.error("CRUD.js ==> Update Data Error: ", error);
+        const q = query(collection(db, "Wishlists"), where("UID", "==", UID), where("bookId", "==", bookId));
+        const wishlistQuerySnapshot = await getDocs(q);
+        if(wishlistQuerySnapshot.size === 0){
+            console.log("Book not in wishlist");
+            return;
+        }
+        wishlistQuerySnapshot.forEach((doc) => {
+            db.collection("Wishlists").doc(doc.id).delete();
+        });
+    }catch(e){
+        console.error("Error CRUD:RemoveFromWishlist ==> ", e);
     }
 };
 
-export const deleteData = async (collectionName, id) => {
+export const FetchWishlist = async () => {
     try{
-        await deleteDoc(doc(db, collectionName, id));
-    }catch(error){
-        console.error("CRUD.js ==> Delete Data Error: ", error);
+        const books = [];
+        const q = query(collection(db, "Wishlists"), where("UID", "==", UID));
+        const wishlistQuerySnapshot = await getDocs(q);
+        for(const doc of wishlistQuerySnapshot.docs){
+            let bookQuery = query(collection(db, "Books"), where("id", "==", doc.data().bookId));
+            const querySnapshot = await getDocs(bookQuery);
+            if(querySnapshot.size !== 0) {
+                books.push(querySnapshot.docs[0].data());
+            }
+        }
+        return books || [];
+    }catch(e){
+        console.error("Error CRUD:FetchWishlist ==> ", e);
     }
+    return [];
 };
 
-export const GetCartList = async () => {
-    const collectionName = "Carts";
-    try{
-        const querySnapshot = await getDocs(collection(db, collectionName));
-        const data = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        return data;
-    }catch(error){
-        console.error("CRUD.js ==> Read Data Error: ", error);
-    }
-};
+
 
 
 
