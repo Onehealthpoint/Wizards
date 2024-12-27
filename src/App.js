@@ -10,6 +10,7 @@ import PaymentPage from "./pages/PaymentPage";
 
 // Imports for Firebase
 import auth from './components/Firebase/Auth';
+import UserPage from "./pages/UserPage";
 
 
 function App() {
@@ -19,13 +20,15 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/category" element={<CategoryPage />} />
+          <Route path="/User" element={<UserPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/payment" element={<PaymentPage />} />         
         </Routes>
       </Router>
     </div>
   );
 }
-
+/* <Route path="/product/:bookId" element={<ProductPage />} />   */
+// need one path here
 export default App;
