@@ -29,7 +29,6 @@ const Navbar = () => {
                 <Link to={'/category'}>Category</Link>
             </li>
 
-            
             {
                 LoggedIn? (
                     <li>
@@ -46,12 +45,6 @@ const Navbar = () => {
                 <Link to={'/'}>User</Link>
             </li>
 
-            {/* <li>
-                <Link to={'/'}>Admin</Link>
-            </li> */}
-
-            
-
             <li>
                 <Link to={'/cart'}>
                     Cart(0)
@@ -61,11 +54,11 @@ const Navbar = () => {
     );
 
     return (
-        <nav className="bg-purple-600 sticky top-0 z-50">
+        <nav className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 sticky top-0 z-50">
             <div className="lg:flex lg:justify-between items-center py-3 lg:px-3 ">
                 <div className="left py-3 lg:py-0">
                     <Link to={'/'}>
-                    <h2 className=" font-bold text-white text-2xl text-center">WIZARDS'</h2>
+                        <h2 className="font-bold text-white text-2xl text-center">WIZARDS'</h2>
                     </Link>
                 </div>
 
