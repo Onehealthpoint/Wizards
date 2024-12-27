@@ -1,13 +1,12 @@
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from 'firebase/auth';
 import { auth } from "../Firebase/Auth";
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // Cleanup alert message to be user specific. It currently shows the error message from Firebase directly.
 
 
 const LoginComponent = () => {
-    const [LoggedIn, setLoggedIn] = useState(false);
-
     const [hasAccount, setHasAccount] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -16,8 +15,7 @@ const LoginComponent = () => {
         async (e) => {
             e.preventDefault();
             try {
-                const user = await signInWithEmailAndPassword(auth, email, password);
-                console.log(user.user.toJSON);
+                await signInWithEmailAndPassword(auth, email, password);
             } catch (error) {
                 console.error("LoginComponent.js ==> Login Error: ", error.message);
             }
@@ -29,9 +27,7 @@ const LoginComponent = () => {
         async (e) => {
             e.preventDefault();
             try {
-                const user = await createUserWithEmailAndPassword(auth, email, password);
-                console.log(user.user.toJSON);
-
+                await createUserWithEmailAndPassword(auth, email, password);
             } catch (error) {
                 console.error("LoginComponent.js ==> Signup Error: ",error.message);
             }
@@ -43,8 +39,7 @@ const LoginComponent = () => {
         async () => {
             try {
                 const provider = new GoogleAuthProvider();
-                const user = await signInWithPopup(auth, provider);
-                console.log(user.user.toJSON);
+                await signInWithPopup(auth, provider);
             } catch (error) {
                 console.error("LoginComponent.js ==> Google Login Error: ",error.message);
             }
@@ -55,6 +50,21 @@ const LoginComponent = () => {
     const toggleHasAccount = useCallback(() => {
         setHasAccount((prev) => !prev);
     }, []);
+
+    // leave login page on login
+    const navigate = useNavigate();
+    useEffect(() => {
+        const redirect = () => {
+            onAuthStateChanged(auth, () =>{
+                if (auth.currentUser !== null) {
+                    console.info("User is logged in.");
+                    navigate("/", { replace: true });
+                }
+            });
+        }
+        redirect();
+    }, [navigate]);
+    
 
     return (
         <div className="container mx-auto px-4">
@@ -103,8 +113,6 @@ const LoginComponent = () => {
                 </>
             ) : (
                 <>
-
-
                     <form onSubmit={handleSignup} className="bg-white max-w-md mx-auto p-8 rounded-lg shadow-lg">
                         <h1 className="text-2xl font-bold text-center mt-10 p-4 text-gray-800">Sign up</h1>
                         <div className="mb-6">
