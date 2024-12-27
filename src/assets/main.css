@@ -105,7 +105,7 @@
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
 }/*
-! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com
+! tailwindcss v3.4.15 | MIT License | https://tailwindcss.com
 *//*
 1. Prevent padding and border from affecting element width. (https://github.com/mozdevs/cssremedy/issues/4)
 2. Allow adding a border to an element by just adding a border-width. (https://github.com/tailwindcss/tailwindcss/pull/116)
@@ -562,6 +562,9 @@ video {
 .mt-10 {
   margin-top: 2.5rem;
 } 
+.mt-4 {
+  margin-top: 1rem;
+} 
 .mt-6 {
   margin-top: 1.5rem;
 } 
@@ -592,12 +595,6 @@ video {
 .h-40 {
   height: 10rem;
 } 
-.h-6 {
-  height: 1.5rem;
-} 
-.h-80 {
-  height: 20rem;
-} 
 .min-h-screen {
   min-height: 100vh;
 } 
@@ -606,15 +603,6 @@ video {
 } 
 .w-20 {
   width: 5rem;
-} 
-.w-24 {
-  width: 6rem;
-} 
-.w-6 {
-  width: 1.5rem;
-} 
-.w-64 {
-  width: 16rem;
 } 
 .w-auto {
   width: auto;
@@ -633,9 +621,6 @@ video {
 } 
 .max-w-md {
   max-width: 28rem;
-} 
-.flex-1 {
-  flex: 1 1 0%;
 } 
 .transform {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
@@ -660,6 +645,9 @@ video {
 } 
 .gap-2 {
   gap: 0.5rem;
+} 
+.gap-6 {
+  gap: 1.5rem;
 } 
 .gap-8 {
   gap: 2rem;
@@ -900,6 +888,10 @@ video {
   --tw-text-opacity: 1;
   color: rgb(59 130 246 / var(--tw-text-opacity, 1));
 } 
+.text-blue-600 {
+  --tw-text-opacity: 1;
+  color: rgb(37 99 235 / var(--tw-text-opacity, 1));
+} 
 .text-gray-500 {
   --tw-text-opacity: 1;
   color: rgb(107 114 128 / var(--tw-text-opacity, 1));
@@ -1047,6 +1039,12 @@ video {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(252 165 165 / var(--tw-ring-opacity, 1));
 } 
+@media (min-width: 640px) {
+
+  .sm\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+} 
 @media (min-width: 768px) {
 
   .md\:mb-0 {
@@ -1085,6 +1083,14 @@ video {
 
   .lg\:h-60 {
     height: 15rem;
+  }
+
+  .lg\:grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .lg\:grid-cols-6 {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
   }
 
   .lg\:flex-row {
