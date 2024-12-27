@@ -1,8 +1,24 @@
 import { Link } from "react-router-dom";
 import SearchBar from "../SearchBar/SearchBar";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "../Firebase/Auth";
+import { useState, useEffect } from "react";
 
 
 const Navbar = () => {
+    const [LoggedIn, setLoggedIn] = useState(false);
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+          if (user) {
+            setLoggedIn(true);
+          } else {
+            setLoggedIn(false);
+          }
+        });
+        return () => unsubscribe();
+      }, []);
+
     const navList = (
         <ul className="flex space-x-3 text-white font-medium text-md px-5 ">
             <li>
@@ -13,9 +29,18 @@ const Navbar = () => {
                 <Link to={'/category'}>Category</Link>
             </li>
 
-            <li>
-                <Link to={'/login'}>Signup</Link>
-            </li>
+            
+            {
+                LoggedIn? (
+                    <li>
+                        <Link to={'/'} onClick={()=>{signOut(auth)}}>Logout</Link>
+                    </li>
+                ) : (
+                    <li>
+                        <Link to={'/login'}>Signup</Link>
+                    </li>
+                )
+            }
 
             <li>
                 <Link to={'/'}>User</Link>
@@ -25,9 +50,7 @@ const Navbar = () => {
                 <Link to={'/'}>Admin</Link>
             </li> */}
 
-            {/* <li>
-                logout
-            </li> */}
+            
 
             <li>
                 <Link to={'/cart'}>
