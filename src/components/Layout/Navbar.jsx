@@ -42,7 +42,7 @@ const Navbar = () => {
             }
 
             <li>
-                <Link to={'/'}>User</Link>
+                <Link to={'/User'}>User</Link>
             </li>
 
             <li>
