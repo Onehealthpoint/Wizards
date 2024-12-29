@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { FetchCart } from "../Firebase/CRUD";
 import CartItemCard from "./CartItemCard";
+import Loader from "../Loader/Loader";
 
 const CartComponent = () => {
     const [cartedBooks, setCartedBooks] = useState([]); 
@@ -24,7 +25,7 @@ const CartComponent = () => {
         if(cartedBooks.length > 0) setLoading(false);
     }, [cartedBooks]);
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <div className="h-svh flex justify-center items-center"><Loader/></div>;
 
     if (error) return <p>Error: {error}</p>;
 
