@@ -25,7 +25,7 @@ const CartComponent = () => {
         if(cartedBooks.length > 0) setLoading(false);
     }, [cartedBooks]);
 
-    if (loading) return <div className="h-svh flex justify-center items-center"><Loader/></div>;
+    if (loading) return <Loader/>;
 
     if (error) return <p>Error: {error}</p>;
 
