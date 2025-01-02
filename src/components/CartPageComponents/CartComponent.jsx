@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { FetchCart } from "../Firebase/CRUD";
 import CartItemCard from "./CartItemCard";
-import Loader from "../Loader/Loader";
+import { CartLoader } from "../Loader/Loader";
 
 const CartComponent = () => {
     const [cartedBooks, setCartedBooks] = useState([]); 
@@ -25,7 +25,7 @@ const CartComponent = () => {
         if(cartedBooks.length > 0) setLoading(false);
     }, [cartedBooks]);
 
-    if (loading) return <Loader/>;
+    if (loading) return <CartLoader/>;
 
     if (error) return <p>Error: {error}</p>;
 
