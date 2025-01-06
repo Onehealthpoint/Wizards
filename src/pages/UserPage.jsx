@@ -1,10 +1,10 @@
 import Layout from "../components/Layout/Layout";
-import UserComponent from "../components/UserComponent/UserComponent";
+import MainUserComponent from "../components/UserComponent/MainUserComponent";
 
 const UserPage = () => {
     return (
         <Layout>
-            <UserComponent />
+            <MainUserComponent />
         </Layout>
     );
 };
