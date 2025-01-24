@@ -617,9 +617,6 @@ video {
 .min-h-screen {
   min-height: 100vh;
 } 
-.w-10 {
-  width: 2.5rem;
-} 
 .w-16 {
   width: 4rem;
 } 
@@ -862,9 +859,6 @@ video {
 } 
 .object-cover {
   object-fit: cover;
-} 
-.p-1 {
-  padding: 0.25rem;
 } 
 .p-2 {
   padding: 0.5rem;

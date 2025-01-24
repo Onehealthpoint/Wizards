@@ -29,6 +29,14 @@ const AdminComponent = () => {
 
     const handleSubmitAddOneBook = (e) => {
         e.preventDefault();
+
+        // Check if price is a number
+        if(isNaN(book.price)){
+            alert("Price must be a number");
+            setBook({ ...book, price: 0.0 });
+            return;
+        }
+
         // Check if book fields are empty
         if(!IsBookValid(book)){
             alert("Book fields cannot be empty");
@@ -36,6 +44,7 @@ const AdminComponent = () => {
         }
         AddBook(book);
         setAdd(false);
+        setFile(null);
         setBook({
             title: "",
             author: "",
@@ -79,7 +88,21 @@ const AdminComponent = () => {
             <div className="p-6 bg-gray-100 flex flex-col items-center">
                 <span className="lg:w-1/4 flex flex-row items-center text-center justify-between">
                     <h3 className="text-xl font-semibold text-gray-700 mb-4 ">Add Item</h3>
-                    <button className="mb-4 p-1 w-10 rounded font-extrabold text-xl border border-red-600 bg-red-300 text-red-600" onClick={()=>{setAdd(false)}}>x</button>
+                    <button className="mb-4 p-2 rounded font-extrabold border border-red-600 bg-red-300 text-red-600" 
+                            onClick={()=>{
+                                setAdd(false);
+                                setFile(null);
+                                setBook({
+                                    title: "",
+                                    author: "",
+                                    genres: [],
+                                    price: 0.0,
+                                    description: "",
+                                    image: "",
+                                    id: ""
+                                });
+                            }}
+                    >❌</button>
                 </span>
                 <span className="lg:w-1/4 flex flex-row items-center my-4">
                     <form className="space-y-4">
@@ -96,6 +119,15 @@ const AdminComponent = () => {
                                 HandleUpload();
                                 setAdd(false);
                                 setFile(null);
+                                setBook({
+                                    title: "",
+                                    author: "",
+                                    genres: [],
+                                    price: 0.0,
+                                    description: "",
+                                    image: "",
+                                    id: ""
+                                });
                             }}
                         >Upload</button>
                     </form>
@@ -125,7 +157,7 @@ const AdminComponent = () => {
                         />
                         <input
                             type="text"
-                            placeholder="Genres [Seperate by comma]"
+                            placeholder="Genres [Seperated by comma]"
                             className="lg:w-1/4 p-2 border border-gray-300 rounded-md"
                             value={book.genres}
                             onChange={(e) => {
@@ -134,11 +166,11 @@ const AdminComponent = () => {
                             }}
                         />
                         <input
-                            type="number"
+                            type="text"
                             placeholder="Price"
                             className="lg:w-1/4 p-2 border border-gray-300 rounded-md"
-                            value={book.price}
-                            onChange={(e) => setBook({ ...book, price: e.target.value })}
+                            value={book.price === 0.0 ? "" : book.price}
+                            onChange={(e) =>setBook({ ...book, price: e.target.value })}
                         />
                         <input
                             type="text"
@@ -176,14 +208,15 @@ const AdminComponent = () => {
               alt="Profile"
               className="w-24 h-24 rounded-full object-cover border-2 border-gray-300 mb-4"
             />
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">{/*USER NAME HERE*/}</h2>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">User{/*USER NAME HERE*/}Name</h2>
           </div>
   
           <div className="mt-6">
             <span className="flex justify-between items-center">
                 <h3 className="text-xl font-semibold text-gray-700 mb-4">ADMIN PANEL</h3>
-                <button className="mb-4 p-1 w-10 rounded font-extrabold text-xl border bg-green-200 border-green-400 text-green-700" onClick={()=>{HandleAdd()}}>+</button>
+                <button className="mb-4 p-2 rounded font-extrabold text-xl border bg-green-200 border-green-400 text-green-700" onClick={()=>{HandleAdd()}}>➕</button>
             </span>
+            {/* Add Book List Here */}
           </div>
         </div>
       </div>
