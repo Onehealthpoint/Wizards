@@ -1,6 +1,6 @@
 import app from './Init';
 import { getFirestore } from "firebase/firestore";
-import { collection, query, and, where, getDoc, getDocs, addDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { IsBookValid } from '../Helper/HelperFunctions';
 // import { UID } from './Auth';
 
@@ -195,7 +195,7 @@ export const IsAdmin = async () => {
 export const FetchAllBooks = async () => {
     try{
         const books = [];
-        const querySnapshot = await getDoc(collection(db, "Books"));
+        const querySnapshot = await getDocs(collection(db, "Books"));
         querySnapshot.forEach((doc) => {
             books.push(doc.data());
         });
