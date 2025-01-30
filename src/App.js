@@ -7,9 +7,6 @@ import CategoryPage from "./pages/CategoryPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import PaymentPage from "./pages/PaymentPage";
-
-// Imports for Firebase
-import auth from './components/Firebase/Auth';
 import UserPage from "./pages/UserPage";
 
 

@@ -1,293 +1,317 @@
 import { useState, useEffect } from "react";
-import { AddBook, FetchAllBooks } from "../Firebase/CRUD";
+import { FetchAllBooks, AddBook, UpdateBook, RemoveBook } from "../Firebase/BookCRUD";
 import { IsBookValid } from "../Helper/HelperFunctions";
-import { CartLoader } from "../Loader/Loader";
+import { PlusIcon, PencilIcon, TrashIcon, UploadIcon } from "lucide-react"
+import { User } from "../Firebase/Auth";
 
 
 const AdminComponent = () => {
+    const initialBookState = {
+      title: "",
+      author: "",
+      genres: [],
+      price: 0.0,
+      description: "",
+      imageUrl: "",
+      id: "",
+    };
+
     const [booklist, setBooklist] = useState([]);
     const [file, setFile] = useState(null);
     const [add, setAdd] = useState(false);
+    const [edit, setEdit] = useState(false);
     const [loading, setLoading] = useState(false);
-    
-    const [book, setBook] = useState({
-        title: "",
-        author: "",
-        genres: [],
-        price: 0.0,
-        description: "",
-        image: "",
-        id: ""
-    });
-
-    const handleDelete = (id) => {
-        //
-        // add a delete function here   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-        //
-        const newBookList = booklist.filter((book) => book.id !== id);
-        setBooklist(newBookList);
-    };
-
-    const handleEdit = (id) => {
-        //
-        // add an edit function here   <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-        //
-        alert("Edit book with id(ISBN): " + id + "\nEdit Function Under Construction!");
-    };
-
-    const HandleAdd = () => {
-        setAdd(true);
-    };
-
-    const handleSubmitAddOneBook = (e) => {
-        e.preventDefault();
-
-        // Check if price is a number
-        if(isNaN(book.price)){
-            alert("Price must be a number");
-            setBook({ ...book, price: 0.0 });
-            return;
-        }
-
-        // Check if book fields are empty
-        if(!IsBookValid(book)){
-            alert("Book fields cannot be empty");
-            return;
-        }
-
-        AddBook(book);
-        setAdd(false);
-        setFile(null);
-        setBook({
-            title: "",
-            author: "",
-            genres: [],
-            price: 0.0,
-            description: "",
-            imageUrl: "",
-            id: ""
-        });
-    };
-
-
-    const HandleUpload = async() => {
-        if(!file){ 
-            alert("No file selected");
-            return;
-        }
-
-        if(file.type !== "application/json"){
-            alert("Invalid file type");
-            return;
-        }
-
-        try {
-            const text = await file.text();
-            const books = JSON.parse(text);
-    
-            for (const book of books) {
-                if (IsBookValid(book)) {
-                    await AddBook(book);
-                } else {
-                    console.log("Invalid book data: ", book);
-                }
-            }
-        } catch (e) {
-            console.error("Error AdminComponent:HandleUpload ==> ", e);
-        }
-    };
+    const [adminName, setAdminName] = useState("");
+  
+    const [book, setBook] = useState(initialBookState);
 
     useEffect(() => {
-        const fetchBooks = async () => {
-            try {
-                const data = await FetchAllBooks();
-                setBooklist(data || []);
-            } catch (e) {
-                console.error("Error FetchBooks: ", e);
-            }
-        };
-        fetchBooks();
+        if(User){
+            setAdminName(User.displayName);
+        }else{
+            setAdminName("Admin");
+        }
+        console.log("Admin Name: ", User);
     }, []);
-
+  
     useEffect(() => {
-        if(booklist.length > 0) setLoading(false);
-    }, [booklist]);
-    
-
-    if(add) return(
-        <div className="p-6 bg-gray-100 flex flex-col items-center">
-            <span className="lg:w-1/4 flex flex-row items-center text-center justify-between">
-                <h3 className="text-xl font-semibold text-gray-700 mb-4 ">Add Item</h3>
-                <button className="mb-4 p-2 rounded font-extrabold border border-red-600 bg-red-300 text-red-600" 
-                        onClick={()=>{
-                            setAdd(false);
-                            setFile(null);
-                            setBook({
-                                title: "",
-                                author: "",
-                                genres: [],
-                                price: 0.0,
-                                description: "",
-                                imageUrl: "",
-                                id: ""
-                            });
-                        }}
-                >❌</button>
-            </span>
-            <span className="lg:w-1/4 flex flex-row items-center my-4">
-                <form className="space-y-4">
-                    <input 
-                        type="file"
-                        accept=".json" 
-                        onChange={(e) => setFile(e.target.files[0])} 
-                        required
-                    />
-                    <button 
-                        className="lg:w-32 bg-blue-500 hover:bg-blue-600 text-white font-semibold p-2 rounded-md"
-                        type="button"
-                        onClick={()=>{
-                            HandleUpload();
-                            setAdd(false);
-                            setFile(null);
-                            setBook({
-                                title: "",
-                                author: "",
-                                genres: [],
-                                price: 0.0,
-                                description: "",
-                                imageUrl: "",
-                                id: ""
-                            });
-                        }}
-                    >Upload</button>
-                </form>
-            </span>
-            <form className="space-y-4 w-full mt-4">
-                <div className="flex flex-col items-center w-full gap-y-4">
-                    <input
-                        type="text"
-                        placeholder="ISBN"
-                        className="lg:w-1/4 p-2 border border-gray-300 rounded-md"
-                        value={book.id}
-                        onChange={(e) => setBook({ ...book, id: e.target.value })}
-                    />
-                    <input
-                        type="text"
-                        placeholder="Title"
-                        className="lg:w-1/4 p-2 border border-gray-300 rounded-md"
-                        value={book.title}
-                        onChange={(e) => setBook({ ...book, title: e.target.value })}
-                    />
-                    <input
-                        type="text"
-                        placeholder="Author"
-                        className="lg:w-1/4 p-2 border border-gray-300 rounded-md"
-                        value={book.author}
-                        onChange={(e) => setBook({ ...book, author: e.target.value })}
-                    />
-                    <input
-                        type="text"
-                        placeholder="Genres [Seperated by comma]"
-                        className="lg:w-1/4 p-2 border border-gray-300 rounded-md"
-                        value={book.genres}
-                        onChange={(e) => {
-                            const inputGenre = e.target.value.split(",");
-                            setBook({ ...book, genres: inputGenre});
-                        }}
-                    />
-                    <input
-                        type="text"
-                        placeholder="Price"
-                        className="lg:w-1/4 p-2 border border-gray-300 rounded-md"
-                        value={book.price === 0.0 ? "" : book.price}
-                        onChange={(e) =>setBook({ ...book, price: e.target.value })}
-                    />
-                    <input
-                        type="text"
-                        placeholder="Description"
-                        className="lg:w-1/4 p-2 border border-gray-300 rounded-md"
-                        value={book.description}
-                        onChange={(e) => setBook({ ...book, description: e.target.value })}
-                    />
-                    <input
-                        type="text"
-                        placeholder="Image"
-                        className="lg:w-1/4 p-2 border border-gray-300 rounded-md"
-                        value={book.imageUrl}
-                        onChange={(e) => setBook({ ...book, imageUrl: e.target.value })}
-                    />
-                    <button
-                        className="w-32 bg-blue-500 hover:bg-blue-600 text-white font-semibold p-2 rounded-md"
-                        type="button"
-                        onClick={handleSubmitAddOneBook}
-                    >
-                        Add
-                    </button>
-                </div>
-            </form>
-        </div>
-    );
-
+      const fetchBooks = async () => {
+        try {
+          setLoading(true);
+          const data = await FetchAllBooks();
+          setBooklist(data || []);
+        } catch (e) {
+          console.error("Error fetching books:", e);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchBooks();
+    }, []);
+  
+    const handleDelete = async (id) => {
+      if (window.confirm("Are you sure you want to delete this book?")) {
+        await RemoveBook(id);
+        setBooklist(booklist.filter((book) => book.id !== id));
+      }
+    };
+  
+    const handleEdit = (id) => {
+      const bookToEdit = booklist.find((book) => book.id === id);
+      setBook(bookToEdit);
+      setEdit(true);
+    };
+  
+    const handleAdd = () => {
+      setAdd(true);
+      setEdit(false);
+      setBook(initialBookState);
+    };
+  
+    const handleSubmit = async (e) => {
+      e.preventDefault();
+  
+      if (isNaN(book.price)) {
+        alert("Price must be a number");
+        setBook({ ...book, price: 0.0 });
+        return;
+      }
+  
+      if (!IsBookValid(book)) {
+        alert("All fields are required");
+        return;
+      }
+  
+      try {
+        setLoading(true)
+        if (edit) {
+          await UpdateBook(book);
+          setBooklist(booklist.map((b) => (b.id === book.id ? book : b)));
+        } else {
+          await AddBook(book);
+          const newBooklist = await FetchAllBooks();
+          setBooklist(newBooklist || []);
+        }
+        setAdd(false);
+        setEdit(false);
+        setBook(initialBookState);
+      } catch (error) {
+        console.error("Error submitting book:", error);
+        alert("An error occurred while submitting the book");
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    const handleUpload = async () => {
+      if (!file) {
+        alert("No file selected");
+        return;
+      }
+  
+      if (file.type !== "application/json") {
+        alert("Invalid file type. Please upload a JSON file.");
+        return;
+      }
+  
+      try {
+        setLoading(true);
+        const text = await file.text();
+        const books = JSON.parse(text);
+  
+        for (const newBook of books) {
+          if (IsBookValid(newBook)) {
+            await AddBook(newBook);
+          } else {
+            console.log("Invalid book data:", newBook);
+          }
+        }
+  
+        const updatedBooks = await FetchAllBooks();
+        setBooklist(updatedBooks || []);
+  
+        setFile(null);
+        alert("Books uploaded successfully!");
+      } catch (e) {
+        console.error("Error uploading books:", e);
+        alert("An error occurred while uploading books");
+      } finally {
+        setLoading(false);
+      }
+    };
+  
     return (
-        <div className="p-6 bg-gray-100  flex flex-col items-center w-full">
-            <div className="bg-white rounded-lg shadow-md p-6 w-[40%]">
-                <div className="flex flex-col items-center mx-auto">
-                    <img
-                        src={/*USER PROFILE PICTURE HERE*/""}
-                        alt="Profile"
-                        className="w-24 h-24 rounded-full object-cover border-2 border-gray-300 mb-4"
-                    />
-                    <h2 className="text-2xl font-bold text-gray-800 mb-2">User{/*USER NAME HERE*/}Name</h2>
-                </div>
-        
-                <div className="mt-6 w-[80%] mx-auto border-b-2 border-gray-300">
-                    <span className="flex justify-between items-center">
-                        <h3 className="text-xl font-semibold text-gray-700 mb-4">ADMIN PANEL</h3>
-                        <button className="mb-4 p-2 rounded border bg-green-200 border-green-400" 
-                            onClick={()=>{
-                                HandleAdd();
-                            }}
-                        >➕</button>
-                    </span>
-                </div>
-                
-                <div className="flex flex-col items-center">
-                    {loading?
-                        <CartLoader/>
-                        :
-                        <div className="w-[80%]">
-                            {booklist.map((book) => (
-                                <div key={book.id} className="flex flex-row items-center border-b-2 border-gray-300 py-4">
-                                    <div className="flex flex-row items-center min-w-full justify-between gap-10">
-                                        <div className="flex flex-col gap-2 items-center w-1/4">
-                                            <img src={book.imageUrl} alt={book.title} className="w-16 h-16 object-cover rounded-md"/>
-                                            <h3 className="text-lg font-semibold text-gray-800">${book.price}</h3>
-                                        </div>
-                                        <div className="flex flex-col ml-4 w-1/2">
-                                            <h3 className="text-lg font-semibold text-gray-800">{book.title}</h3>
-                                            <h4 className="text-md font-semibold text-gray-600">{book.author}</h4>
-                                        </div>
-                                        <div className="flex flex-col gap-2 items-center w-1/4">
-                                            <button className="p-2 rounded font-extrabold border border-yellow-600 bg-yellow-300 text-yellow-600" 
-                                                    onClick={()=>{
-                                                        handleEdit(book.id);
-                                                    }}
-                                            >🖊️</button>
-                                            <button className="p-2 rounded font-extrabold border border-red-600 bg-red-300 text-red-600" 
-                                                    onClick={()=>{
-                                                        handleDelete(book.id);
-                                                    }}
-                                            >❌</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    }
-                </div>
+      <div className="min-h-screen bg-gray-100 p-8">
+        <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
+          <div className="p-8">
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+              <p className="text-gray-600 italic font-light">Welcome, {adminName}</p>
             </div>
+  
+            <div className="flex justify-between items-center mb-6 mt-6">
+              <button
+                onClick={handleAdd}
+                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg flex items-center"
+              >
+                <PlusIcon className="w-5 h-5 mr-2" />
+                Add New Book
+              </button>
+  
+              <div className="flex items-center space-x-4">
+                <input
+                  type="file"
+                  accept=".json"
+                  onChange={(e) => setFile(e.target.files[0])}
+                  className="hidden"
+                  id="file-upload"
+                />
+                <label
+                  htmlFor="file-upload"
+                  className={`${
+                    file
+                      ? "bg-green-300 hover:bg-green-400 cursor-default"
+                      : "bg-green-500 hover:bg-green-600 cursor-pointer"
+                  } text-white font-semibold py-2 px-4 rounded-lg flex items-center transition-colors duration-200`}
+                >
+                  <UploadIcon className="w-5 h-5 mr-2" />
+                  {file ? "File Selected" : "Choose File"}
+                </label>
+                <button
+                  onClick={handleUpload}
+                  disabled={!file || loading}
+                  className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg flex items-center disabled:opacity-50"
+                >
+                  <UploadIcon className="w-5 h-5 mr-2" />
+                  Upload Books
+                </button>
+              </div>
+            </div>
+  
+            {(add || edit) && (
+              <form className="bg-gray-50 p-6 rounded-lg mb-6">
+                <h2 className="text-2xl font-semibold mb-4">{edit ? "Edit Book" : "Add New Book"}</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <input
+                    type="text"
+                    placeholder="ISBN"
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                    value={book.id}
+                    onChange={(e) => setBook({ ...book, id: e.target.value })}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Title"
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                    value={book.title}
+                    onChange={(e) => setBook({ ...book, title: e.target.value })}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Author"
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                    value={book.author}
+                    onChange={(e) => setBook({ ...book, author: e.target.value })}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Genres (comma-separated)"
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                    value={book.genres.join(", ")}
+                    onChange={(e) => setBook({ ...book, genres: e.target.value.split(",").map((g) => g.trim()) })}
+                  />
+                  <input
+                    type="number"
+                    placeholder="Price"
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                    value={book.price}
+                    onChange={(e) => setBook({ ...book, price: Number.parseFloat(e.target.value) })}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Image URL"
+                    className="w-full p-2 border border-gray-300 rounded-md"
+                    value={book.imageUrl}
+                    onChange={(e) => setBook({ ...book, imageUrl: e.target.value })}
+                  />
+                  <textarea
+                    placeholder="Description"
+                    className="w-full p-2 border border-gray-300 rounded-md col-span-2"
+                    value={book.description}
+                    onChange={(e) => setBook({ ...book, description: e.target.value })}
+                    rows={3}
+                  />
+                </div>
+                <div className="mt-4 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={handleSubmit}
+                    disabled={loading}
+                    className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg mr-2"
+                  >
+                    {loading ? "Saving..." : edit ? "Update Book" : "Add Book"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAdd(false)
+                      setEdit(false)
+                    }}
+                    className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            )}
+  
+            {loading && !add && !edit ? (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+                <p className="mt-4 text-gray-600">Loading books...</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="min-w-full bg-white">
+                  <thead className="bg-gray-100">
+                    <tr>
+                      <th className="py-3 px-4 text-left">Title</th>
+                      <th className="py-3 px-4 text-left">Author</th>
+                      <th className="py-3 px-4 text-left">Price</th>
+                      <th className="py-3 px-4 text-left">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {booklist.map(
+                      (book) =>
+                        book && (
+                          <tr key={book.id} className="border-b border-gray-200 hover:bg-gray-50">
+                            <td className="py-3 px-4">{book.title}</td>
+                            <td className="py-3 px-4">{book.author}</td>
+                            <td className="py-3 px-4">${book.price}</td>
+                            <td className="py-3 px-4">
+                              <button
+                                onClick={() => handleEdit(book.id)}
+                                className="text-blue-500 hover:text-blue-600 mr-2"
+                              >
+                                <PencilIcon className="w-5 h-5" />
+                              </button>
+                              <button onClick={() => handleDelete(book.id)} className="text-red-500 hover:text-red-600">
+                                <TrashIcon className="w-5 h-5" />
+                              </button>
+                            </td>
+                          </tr>
+                        ),
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
         </div>
+      </div>
     );
-};
-
-export default AdminComponent;
+  }
+  
+  export default AdminComponent;
