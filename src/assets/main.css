@@ -557,6 +557,9 @@ video {
 .ml-2 {
   margin-left: 0.5rem;
 } 
+.ml-4 {
+  margin-left: 1rem;
+} 
 .mr-2 {
   margin-right: 0.5rem;
 } 
@@ -617,8 +620,11 @@ video {
 .min-h-screen {
   min-height: 100vh;
 } 
-.w-10 {
-  width: 2.5rem;
+.w-1\/2 {
+  width: 50%;
+} 
+.w-1\/4 {
+  width: 25%;
 } 
 .w-16 {
   width: 4rem;
@@ -641,6 +647,12 @@ video {
 .w-64 {
   width: 16rem;
 } 
+.w-\[40\%\] {
+  width: 40%;
+} 
+.w-\[80\%\] {
+  width: 80%;
+} 
 .w-auto {
   width: auto;
 } 
@@ -649,6 +661,9 @@ video {
 } 
 .w-screen {
   width: 100vw;
+} 
+.min-w-full {
+  min-width: 100%;
 } 
 .max-w-4xl {
   max-width: 56rem;
@@ -701,6 +716,9 @@ video {
 } 
 .justify-between {
   justify-content: space-between;
+} 
+.gap-10 {
+  gap: 2.5rem;
 } 
 .gap-2 {
   gap: 0.5rem;
@@ -755,6 +773,9 @@ video {
 .border-b {
   border-bottom-width: 1px;
 } 
+.border-b-2 {
+  border-bottom-width: 2px;
+} 
 .border-t {
   border-top-width: 1px;
 } 
@@ -777,6 +798,10 @@ video {
 .border-red-600 {
   --tw-border-opacity: 1;
   border-color: rgb(220 38 38 / var(--tw-border-opacity, 1));
+} 
+.border-yellow-600 {
+  --tw-border-opacity: 1;
+  border-color: rgb(202 138 4 / var(--tw-border-opacity, 1));
 } 
 .bg-blue-500 {
   --tw-bg-opacity: 1;
@@ -830,6 +855,10 @@ video {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
 } 
+.bg-yellow-300 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(253 224 71 / var(--tw-bg-opacity, 1));
+} 
 .bg-gradient-to-r {
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
 } 
@@ -862,9 +891,6 @@ video {
 } 
 .object-cover {
   object-fit: cover;
-} 
-.p-1 {
-  padding: 0.25rem;
 } 
 .p-2 {
   padding: 0.5rem;
@@ -916,6 +942,10 @@ video {
 .py-3 {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
+} 
+.py-4 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 } 
 .py-8 {
   padding-top: 2rem;
@@ -1004,10 +1034,6 @@ video {
   --tw-text-opacity: 1;
   color: rgb(22 163 74 / var(--tw-text-opacity, 1));
 } 
-.text-green-700 {
-  --tw-text-opacity: 1;
-  color: rgb(21 128 61 / var(--tw-text-opacity, 1));
-} 
 .text-purple-600 {
   --tw-text-opacity: 1;
   color: rgb(147 51 234 / var(--tw-text-opacity, 1));
@@ -1023,6 +1049,10 @@ video {
 .text-white {
   --tw-text-opacity: 1;
   color: rgb(255 255 255 / var(--tw-text-opacity, 1));
+} 
+.text-yellow-600 {
+  --tw-text-opacity: 1;
+  color: rgb(202 138 4 / var(--tw-text-opacity, 1));
 } 
 .placeholder-gray-400::placeholder {
   --tw-placeholder-opacity: 1;
