@@ -11,6 +11,7 @@ import PaymentPage from "./pages/PaymentPage";
 // Imports for Firebase
 import auth from './components/Firebase/Auth';
 import UserPage from "./pages/UserPage";
+import CategoryDetailPage from "./components/CategoryPageComponents/CategoryDetailPage";
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/category" element={<CategoryPage />} />
+          <Route path="/category/:categoryId" element={<CategoryDetailPage />} />
           <Route path="/User" element={<UserPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/login" element={<LoginPage />} />
