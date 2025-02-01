@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FetchCart } from "../Firebase/CRUD";
+import { FetchCart } from "../Firebase/CartCRUD";
 import CartItemCard from "./CartItemCard";
 import { CartLoader } from "../Loader/Loader";
 

@@ -6,11 +6,11 @@ const CartItemCard = (Book) => {
     //  book = {
     //      title: "Book Title",                    string
     //      author: "Book Author",                  string
-    //      genre: ["Genre1", "Genre2", "Genre3"],  array of strings
+    //      genres: ["Genre1", "Genre2", "Genre3"],  array of strings
     //      price: 10.00,                           float
     //      description: "Book Description",        string
     //      imageUrl: "Book Image URL",                Url
-    //      id: "Book ID"                           string
+    //      id: "Book ISBN"                           string
     //  }
     //  qty = 1                                     int
     
@@ -23,7 +23,7 @@ const CartItemCard = (Book) => {
             <img src={ book.imageUrl } alt={ book.title } className="h-20 w-20 object-contain" />
             Book: { book.title } ||
             { book.author } ||
-            { book.genre.join(", ") } ||
+            { book.genres.join(", ") } ||
             { book.price } ||
             { book.description } ||
             { book.imageUrl } ||
