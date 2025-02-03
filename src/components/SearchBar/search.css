@@ -1,0 +1,11 @@
+.Search-main{
+    background-color: #eee;
+    height: 100vh;
+    width: 100vw;
+}
+.search-bar{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 200px;
+}
