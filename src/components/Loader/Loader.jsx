@@ -24,18 +24,17 @@ export const CartLoader = () => {
 
 export const UserLoader = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="mx-auto my-auto">
       <svg 
         xmlns="http://www.w3.org/2000/svg" 
-        width="24" 
-        height="24" 
-        viewBox="0 0 800 800" 
+        width="100" 
+        height="100" 
+        viewBox="0 0 24 24" 
         fill="none" 
         stroke="currentColor" 
         stroke-width="2" 
         stroke-linecap="round" 
-        stroke-linejoin="round" 
-        className="animate-drawCart"
+        stroke-linejoin="round"
       >
         <circle cx="12" cy="8" r="5"/>
         <path d="M20 21a8 8 0 0 0-16 0"/>

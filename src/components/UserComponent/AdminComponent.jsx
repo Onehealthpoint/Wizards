@@ -2,10 +2,12 @@ import { useState, useEffect } from "react";
 import { FetchAllBooks, AddBook, UpdateBook, RemoveBook } from "../Firebase/BookCRUD";
 import { IsBookValid } from "../Helper/HelperFunctions";
 import { PlusIcon, PencilIcon, TrashIcon, UploadIcon } from "lucide-react"
-import { User } from "../Firebase/Auth";
+import { useAuth } from "../Firebase/Auth";
 
 
 const AdminComponent = () => {
+    const { User } = useAuth();
+
     const initialBookState = {
       title: "",
       author: "",
@@ -13,7 +15,7 @@ const AdminComponent = () => {
       price: 0.0,
       description: "",
       imageUrl: "",
-      id: "",
+      ISBN: "",
     };
 
     const [booklist, setBooklist] = useState([]);
@@ -32,7 +34,7 @@ const AdminComponent = () => {
             setAdminName("Admin");
         }
         console.log("Admin Name: ", User);
-    }, []);
+    }, [User]);
   
     useEffect(() => {
       const fetchBooks = async () => {
@@ -50,15 +52,15 @@ const AdminComponent = () => {
       fetchBooks();
     }, []);
   
-    const handleDelete = async (id) => {
+    const handleDelete = async (ISBN) => {
       if (window.confirm("Are you sure you want to delete this book?")) {
-        await RemoveBook(id);
-        setBooklist(booklist.filter((book) => book.id !== id));
+        await RemoveBook(ISBN);
+        setBooklist(booklist.filter((book) => book.ISBN !== ISBN));
       }
     };
   
-    const handleEdit = (id) => {
-      const bookToEdit = booklist.find((book) => book.id === id);
+    const handleEdit = (ISBN) => {
+      const bookToEdit = booklist.find((book) => book.ISBN === ISBN);
       setBook(bookToEdit);
       setEdit(true);
     };
@@ -87,7 +89,7 @@ const AdminComponent = () => {
         setLoading(true)
         if (edit) {
           await UpdateBook(book);
-          setBooklist(booklist.map((b) => (b.id === book.id ? book : b)));
+          setBooklist(booklist.map((b) => (b.ISBN === book.ISBN ? book : b)));
         } else {
           await AddBook(book);
           const newBooklist = await FetchAllBooks();
@@ -197,8 +199,8 @@ const AdminComponent = () => {
                     type="text"
                     placeholder="ISBN"
                     className="w-full p-2 border border-gray-300 rounded-md"
-                    value={book.id}
-                    onChange={(e) => setBook({ ...book, id: e.target.value })}
+                    value={book.ISBN}
+                    onChange={(e) => setBook({ ...book, ISBN: e.target.value })}
                   />
                   <input
                     type="text"
@@ -286,18 +288,18 @@ const AdminComponent = () => {
                     {booklist.map(
                       (book) =>
                         book && (
-                          <tr key={book.id} className="border-b border-gray-200 hover:bg-gray-50">
+                          <tr key={book.ISBN} className="border-b border-gray-200 hover:bg-gray-50">
                             <td className="py-3 px-4">{book.title}</td>
                             <td className="py-3 px-4">{book.author}</td>
                             <td className="py-3 px-4">${book.price}</td>
                             <td className="py-3 px-4">
                               <button
-                                onClick={() => handleEdit(book.id)}
+                                onClick={() => handleEdit(book.ISBN)}
                                 className="text-blue-500 hover:text-blue-600 mr-2"
                               >
                                 <PencilIcon className="w-5 h-5" />
                               </button>
-                              <button onClick={() => handleDelete(book.id)} className="text-red-500 hover:text-red-600">
+                              <button onClick={() => handleDelete(book.ISBN)} className="text-red-500 hover:text-red-600">
                                 <TrashIcon className="w-5 h-5" />
                               </button>
                             </td>
