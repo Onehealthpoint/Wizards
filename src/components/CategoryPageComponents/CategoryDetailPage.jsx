@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import Layout from "../Layout/Layout";
 
 const CategoryDetailPage = () => {
     const { categoryId } = useParams();
@@ -26,6 +27,7 @@ const CategoryDetailPage = () => {
     if (!category) return <div>Loading...</div>;
 
     return (
+        <Layout>
         <div className="container mx-auto">
             <h1 className="text-2xl font-bold text-center mt-10">{category.name}</h1>
             <p className="text-center mb-6">{category.description}</p>
@@ -40,6 +42,7 @@ const CategoryDetailPage = () => {
                 ))}
             </div>
         </div>
+        </Layout>
     );
 };
 
