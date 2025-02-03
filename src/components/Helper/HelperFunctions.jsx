@@ -7,7 +7,7 @@ export const IsBookValid = (book) => {
         book.price === 0 || 
         book.description === "" || 
         book.image === "" || 
-        book.id === ""
+        book.ISBN === ""
     ){
         return false;
     }

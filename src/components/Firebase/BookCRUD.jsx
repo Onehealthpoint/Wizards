@@ -24,7 +24,7 @@ export const AddBook = async (book) => {
         return;
     }
     try{
-        const q = query(collection(db, "Books"), where("id", "==", book.id));
+        const q = query(collection(db, "Books"), where("ISBN", "==", book.ISBN));
         const querySnapshot = await getDocs(q);
         // Check if book already exists
         if(querySnapshot.size !== 0){
@@ -32,7 +32,7 @@ export const AddBook = async (book) => {
             return;
         }
         await addDoc(collection(db, "Books"), book);
-        console.log("Book added successfully [", book.title, "]");
+        console.log("Book added successfully [", book.title, " ( ", book.ISBN, " )]");
     }catch(e){
         console.error("Error CRUD:AddBook ==> ", e);
     }
@@ -45,7 +45,7 @@ export const UpdateBook = async (book) => {
         return;
     }
     try{
-        const q = query(collection(db, "Books"), where("id", "==", book.id));
+        const q = query(collection(db, "Books"), where("ISBN", "==", book.ISBN));
         const querySnapshot = await getDocs(q);
         if(querySnapshot.size === 0){
             console.log("Book not found");
@@ -61,14 +61,25 @@ export const UpdateBook = async (book) => {
 
 export const RemoveBook = async (bookId) => {
     try{
-        const q = query(collection(db, "Books"), where("id", "==", bookId));
+        const q = query(collection(db, "Books"), where("ISBN", "==", bookId));
+        const q_cart = query(collection(db, "Carts"), where("ISBN", "==", bookId));
+        const q_wish = query(collection(db, "Wishlist"), where("ISBN", "==", bookId));
         const querySnapshot = await getDocs(q);
+        const querySnapshot_cart = await getDocs(q_cart);
+        const querySnapshot_wish = await getDocs(q_wish);
         if(querySnapshot.size === 0){
             console.log("Book not found");
             return;
         }
         for (const docObj of querySnapshot.docs) {
             await deleteDoc(doc(db, "Books", docObj.id));
+            
+        }
+        for (const docObj of querySnapshot_cart.docs) {
+            await deleteDoc(doc(db, "Carts", docObj.id));
+        }
+        for (const docObj of querySnapshot_wish.docs) {
+            await deleteDoc(doc(db, "Wishlist", docObj.id));
         }
     }catch(e){
         console.error("Error CRUD:RemoveBook ==> ", e);

@@ -2,10 +2,11 @@ import { FetchWishlist, RemoveFromWishlist } from "../Firebase/WishlistCRUD";
 import { validatePassword, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
 import { useState, useEffect } from "react";
 import { TrashIcon } from "lucide-react";
-import { User, auth } from "../Firebase/Auth";
+import { useAuth, auth } from "../Firebase/Auth";
 
 
 const ClientComponent = () => {
+  const { User, UID } = useAuth();
   const [user, setUser] = useState({ name: "", email: "", profilePicture: "" });
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -36,13 +37,13 @@ const ClientComponent = () => {
     };
 
     loadUserData();
-  }, []);
+  }, [User]);
 
   useEffect(() => {
     const loadWishlist = async () => {
       try {
         setLoading(true);
-        const wishlistData = await FetchWishlist();
+        const wishlistData = await FetchWishlist(UID);
         setWishlist(wishlistData);
       } catch (error) {
         console.error("Error loading wishlist:", error);
@@ -52,11 +53,11 @@ const ClientComponent = () => {
     };
 
     loadWishlist();
-  }, []);
+  }, [UID]);
 
-  const handleRemoveFromWishlist = (id) => {
-      RemoveFromWishlist(id);
-      wishlist.filter((item) => item.id !== id);
+  const handleRemoveFromWishlist = (ISBN) => {
+      RemoveFromWishlist(ISBN);
+      wishlist.filter((item) => item.ISBN !== ISBN);
   };
 
   const handleChangePassword = (e) => {
@@ -186,13 +187,13 @@ const ClientComponent = () => {
                 </thead>
                 <tbody>
                   {wishlist.map((book) => (
-                    <tr key={book.id} className="border-b border-gray-200 hover:bg-gray-50">
+                    <tr key={book.ISBN} className="border-b border-gray-200 hover:bg-gray-50">
                       <td className="py-3 px-4">{book.title}</td>
                       <td className="py-3 px-4">{book.author}</td>
                       <td className="py-3 px-4">${book.price}</td>
                       <td className="py-3 px-4">
                         <button
-                          onClick={() => handleRemoveFromWishlist(book.id)}
+                          onClick={() => handleRemoveFromWishlist(book.ISBN)}
                           className="text-red-500 hover:text-red-600"
                         >
                           <TrashIcon className="w-5 h-5" />
