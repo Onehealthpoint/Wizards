@@ -1,9 +1,8 @@
 import { db } from './Init';
 import { collection, query, where, getDocs} from "firebase/firestore";
-import { UID } from './Auth';
 
 
-export const IsAdmin = async () => {
+export const IsAdmin = async (UID) => {
     try{
         if(UID === null) return false;
         const q = query(collection(db, "Users"), where("UID", "==", UID));

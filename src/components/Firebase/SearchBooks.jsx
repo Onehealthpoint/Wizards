@@ -1,13 +1,5 @@
 import { db } from './Init';
 import { collection, query, where, getDocs} from "firebase/firestore";
-// import { UID } from './Auth';
-
-
-// ============================================
-// Remove testUID on production code
-let UID = "sadik123456";
-// Add UID import
-// ============================================
 
 
 export const SearchBooksByTitle = async (title) => {

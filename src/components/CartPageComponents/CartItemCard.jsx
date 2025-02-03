@@ -10,7 +10,7 @@ const CartItemCard = (Book) => {
     //      price: 10.00,                           float
     //      description: "Book Description",        string
     //      imageUrl: "Book Image URL",                Url
-    //      id: "Book ISBN"                           string
+    //      ISBN: "Book ISBN"                           string
     //  }
     //  qty = 1                                     int
     
@@ -27,7 +27,7 @@ const CartItemCard = (Book) => {
             { book.price } ||
             { book.description } ||
             { book.imageUrl } ||
-            { book.id } ||
+            { book.ISBN } ||
             { qty }
             <div className="flex items-center">
                 <div className="mr-2">Qty: { qty }</div>

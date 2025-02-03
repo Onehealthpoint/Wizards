@@ -3,34 +3,32 @@ import AdminComponent from './AdminComponent';
 import { UserLoader } from '../Loader/Loader';
 import { useState, useEffect } from 'react';
 import { IsAdmin } from '../Firebase/Admin';
-import { User } from '../Firebase/Auth';
+import { useAuth } from '../Firebase/Auth';
 
 const MainUserComponent = () => {
+    const { User, UID } = useAuth();
+
     const [admin, setAdmin] = useState(null);
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchIsAdmin = async () => {
             try {
-                const data = await IsAdmin();
+                const data = await IsAdmin(UID);
                 setAdmin(data);
             } catch (e) {
                 console.error("Error IsAdmin: ", e);
                 setAdmin(null);
-            } finally {
-                setLoading(false);
             }
         };
 
         fetchIsAdmin();
-    }, []);
+    }, [UID]);
 
-    if (loading) return <UserLoader/>;
-
-    if (User === null) return(
-        <div className="container text-center text-5xl font-bold mt-[20%]">
-            <div className="row">
-                <h1 className="text-rose-300 border-b-indigo-300">Please Login to continue</h1>
+    if (User === null || User === undefined) return(
+        <div className="container font-bold mt-[20%]">
+            <div className="flex flex-col items-center my-auto">
+                <UserLoader/>
+                <h1 className="text-rose-300 border-b-indigo-300 text-4xl">Please Login to continue</h1>
             </div>
         </div>
     ); 

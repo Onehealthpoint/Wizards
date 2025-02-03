@@ -1,22 +1,14 @@
 import { db } from './Init';
 import { collection, doc, query, where, getDocs, addDoc, updateDoc, deleteDoc } from "firebase/firestore";
-// import { UID } from './Auth';
 
 
-// ============================================
-// Remove testUID on production code
-let UID = "sadik123456";
-// Add UID import
-// ============================================
-
-
-export const FetchCart = async () => {
+export const FetchCart = async (UID) => {
     try{
         const books = [];
         const q = query(collection(db, "Carts"), where("UID", "==", UID));
         const cartQuerySnapshot = await getDocs(q);
         for(const doc of cartQuerySnapshot.docs){
-            let bookQuery = query(collection(db, "Books"), where("id", "==", doc.data().bookId));
+            let bookQuery = query(collection(db, "Books"), where("ISBN", "==", doc.data().ISBN));
             const querySnapshot = await getDocs(bookQuery);
             if(querySnapshot.size !== 0) {
                 books.push([querySnapshot.docs[0].data(), doc.data().quantity]);
@@ -29,9 +21,9 @@ export const FetchCart = async () => {
     return [];
 };
 
-export const AddToCart = async (bookId, qty) => {
+export const AddToCart = async (UID, ISBN, qty) => {
     try{
-        const q = query(collection(db, "Carts"), where("UID", "==", UID), where("bookId", "==", bookId));
+        const q = query(collection(db, "Carts"), where("UID", "==", UID), where("ISBN", "==", ISBN));
         const cartQuerySnapshot = await getDocs(q);
         if(cartQuerySnapshot.size !== 0){
             console.log("Book already in cart");
@@ -39,7 +31,7 @@ export const AddToCart = async (bookId, qty) => {
         }
         await addDoc(collection(db, "Carts"), {
             UID: UID,
-            bookId: bookId,
+            ISBN: ISBN,
             quantity: qty
         });
     }catch(e){
@@ -47,9 +39,9 @@ export const AddToCart = async (bookId, qty) => {
     }
 };
 
-export const RemoveFromCart = async (bookId) => {
+export const RemoveFromCart = async (UID, ISBN) => {
     try{
-        const q = query(collection(db, "Carts"), where("UID", "==", UID), where("bookId", "==", bookId));
+        const q = query(collection(db, "Carts"), where("UID", "==", UID), where("ISBN", "==", ISBN));
         const cartQuerySnapshot = await getDocs(q);
         if(cartQuerySnapshot.size === 0){
             console.log("Book not in cart");
@@ -63,9 +55,9 @@ export const RemoveFromCart = async (bookId) => {
     }
 };
 
-export const UpdateCart = async (bookId, qty) => {
+export const UpdateCart = async (UID, ISBN, qty) => {
     try{
-        const q = query(collection(db, "Carts"), where("UID", "==", UID), where("bookId", "==", bookId));
+        const q = query(collection(db, "Carts"), where("UID", "==", UID), where("ISBN", "==", ISBN));
         const cartQuerySnapshot = await getDocs(q);
         if(cartQuerySnapshot.size === 0){
             console.log("Book not in cart");
