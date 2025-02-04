@@ -24,6 +24,7 @@ const AdminComponent = () => {
     const [edit, setEdit] = useState(false);
     const [loading, setLoading] = useState(false);
     const [adminName, setAdminName] = useState("");
+    const [sortConfig, setSortConfig] = useState({ key: "title", direction: "asc" });
   
     const [book, setBook] = useState(initialBookState);
 
@@ -140,6 +141,21 @@ const AdminComponent = () => {
       } finally {
         setLoading(false);
       }
+    };
+
+    const handleSort = (key) => {
+      setSortConfig({
+        key,
+        direction: sortConfig.key === key && sortConfig.direction === "asc" ? "desc" : "asc",
+      });
+  
+      setBooklist(
+        [...booklist].sort((a, b) => {
+          if (a[key] < b[key]) return sortConfig.direction === "asc" ? -1 : 1;
+          if (a[key] > b[key]) return sortConfig.direction === "asc" ? 1 : -1;
+          return 0;
+        }),
+      );
     };
   
     return (
