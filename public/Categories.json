@@ -4,8 +4,8 @@
         "name": "Fiction",
         "description": "Books that contain fictional stories.",
         "books": [
-            { "id": "1", "title": "The Great Gatsby", "author": "F. Scott Fitzgerald", "summary": "A novel set in the 1920s.", "imageUrl": "/images/great-gatsby.jpg" },
-            { "id": "2", "title": "1984", "author": "George Orwell", "summary": "A dystopian novel.", "imageUrl": "/images/1984.jpg" }
+            { "id": "1", "title": "The Great Gatsby", "author": "F. Scott Fitzgerald", "summary": "A novel set in the 1920s.", "imageUrl": "/images/great-gatsby.jpg", "price": 1099 },
+            { "id": "2", "title": "1984", "author": "George Orwell", "summary": "A dystopian novel.", "imageUrl": "/images/1984.jpg", "price": 899 }
         ]
     },
     {
@@ -13,8 +13,8 @@
         "name": "Non-Fiction",
         "description": "Books that are based on real events.",
         "books": [
-            { "id": "1", "title": "Sapiens", "author": "Yuval Noah Harari", "summary": "A brief history of humankind.", "imageUrl": "/images/sapiens.jpg" },
-            { "id": "2", "title": "Educated", "author": "Tara Westover", "summary": "A memoir.", "imageUrl": "/images/educated.jpg" }
+            { "id": "1", "title": "Sapiens", "author": "Yuval Noah Harari", "summary": "A brief history of humankind.", "imageUrl": "/images/sapiens.jpg", "price": 1299 },
+            { "id": "2", "title": "Educated", "author": "Tara Westover", "summary": "A memoir.", "imageUrl": "/images/educated.jpg", "price": 999 }
         ]
     },
     {
@@ -22,8 +22,8 @@
         "name": "Science",
         "description": "Books that explore scientific concepts.",
         "books": [
-            { "id": "1", "title": "A Brief History of Time", "author": "Stephen Hawking", "summary": "An exploration of cosmology.", "imageUrl": "/images/brief-history-of-time.jpg" },
-            { "id": "2", "title": "The Selfish Gene", "author": "Richard Dawkins", "summary": "A book on evolution.", "imageUrl": "/images/selfish-gene.jpg" }
+            { "id": "1", "title": "A Brief History of Time", "author": "Stephen Hawking", "summary": "An exploration of cosmology.", "imageUrl": "/images/brief-history-of-time.jpg", "price": 1599 },
+            { "id": "2", "title": "The Selfish Gene", "author": "Richard Dawkins", "summary": "A book on evolution.", "imageUrl": "/images/selfish-gene.jpg", "price": 1199 }
         ]
     }
 ]

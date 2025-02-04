@@ -15,6 +15,23 @@ export const SearchBooksByTitle = async (title) => {
         console.error("Error CRUD:SearchBooksByTitle ==> ", e);
     }
 };
+export const SearchBooksByTitlev2 = async (title) => {
+    try {
+        const books = [];
+        const q = query(
+            collection(db, "Books"),
+            where("title", ">=", title),
+            where("title", "<", title + '\uf8ff')
+        );
+        const querySnapshot = await getDocs(q);
+        querySnapshot.forEach((doc) => {
+            books.push(doc.data());
+        });
+        return books;
+    } catch (e) {
+        console.error("Error CRUD:SearchBooksByTitle ==> ", e);
+    }
+};
 
 export const SearchBooksByAuthor = async (author) => {
     try{
