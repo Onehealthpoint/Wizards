@@ -5,7 +5,6 @@ const CategoryComponent = () => {
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
-        // Fetch categories from the public directory
         const fetchCategories = async () => {
             try {
                 const response = await fetch('/Categories.json');

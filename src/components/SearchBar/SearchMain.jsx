@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react"
-import { SearchBooksByTitle } from "../Firebase/SearchBooks"
+import { SearchBooksByTitlev2 } from "../Firebase/SearchBooks"
 
 export const SearchMain = () => {
   const [input, setInput] = useState("")
@@ -15,7 +15,7 @@ export const SearchMain = () => {
     }
     setIsLoading(true)
     try {
-      const books = await SearchBooksByTitle(value)
+      const books = await SearchBooksByTitlev2(value)
       setResults(books)
     } catch (e) {
       console.error("Error fetching books: ", e)
