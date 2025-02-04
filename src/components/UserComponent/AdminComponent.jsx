@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { FetchAllBooks, AddBook, UpdateBook, RemoveBook } from "../Firebase/BookCRUD";
 import { IsBookValid } from "../Helper/HelperFunctions";
-import { PlusIcon, PencilIcon, TrashIcon, UploadIcon } from "lucide-react"
+import { PlusIcon, PencilIcon, TrashIcon, UploadIcon, ArrowDown, ArrowUp } from "lucide-react"
 import { useAuth } from "../Firebase/Auth";
 
 
@@ -293,10 +293,33 @@ const AdminComponent = () => {
                 <table className="min-w-full bg-white">
                   <thead className="bg-gray-100">
                     <tr>
-                      <th className="py-3 px-4 text-left">Title</th>
-                      <th className="py-3 px-4 text-left">Author</th>
-                      <th className="py-3 px-4 text-left">Price</th>
-                      <th className="py-3 px-4 text-left">Actions</th>
+                      <th className="py-3 px-4 text-left">
+                        <button
+                          onClick={() => handleSort("title")}
+                          className="font-semibold hover:text-purple-600 transition-colors focus:outline-none flex items-center"
+                        >
+                          Title {sortConfig.key === "title" && (sortConfig.direction === "asc" ? <ArrowUp/> : <ArrowDown/>)}
+                        </button>
+                      </th>
+                      <th className="py-3 px-4 text-left">
+                        <button
+                          onClick={() => handleSort("author")}
+                          className="font-semibold hover:text-purple-600 transition-colors focus:outline-none flex items-center"
+                        >
+                          Author {sortConfig.key === "author" && (sortConfig.direction === "asc" ? <ArrowUp/> : <ArrowDown/>)}
+                        </button>
+                      </th>
+                      <th className="py-3 px-4 text-left">
+                        <button
+                          onClick={() => handleSort("price")}
+                          className="font-semibold hover:text-purple-600 transition-colors focus:outline-none flex items-center"
+                        >
+                          Price {sortConfig.key === "price" && (sortConfig.direction === "asc" ? <ArrowUp/> : <ArrowDown/>)}
+                        </button>
+                      </th>
+                      <th className="py-3 px-4 text-left">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody>

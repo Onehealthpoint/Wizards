@@ -1,7 +1,7 @@
 import { FetchWishlist, RemoveFromWishlist } from "../Firebase/WishlistCRUD";
 import { validatePassword, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
 import { useState, useEffect } from "react";
-import { TrashIcon } from "lucide-react";
+import { TrashIcon, ArrowUp, ArrowDown } from "lucide-react";
 import { useAuth, auth } from "../Firebase/Auth";
 
 
@@ -14,6 +14,7 @@ const ClientComponent = () => {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [sortConfig, setSortConfig] = useState({ key: "title", direction: "asc" });
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -66,8 +67,7 @@ const ClientComponent = () => {
       alert("Passwords do not match");
       return;
     }
-    // Implement password change logic here
-    // Example: await auth.currentUser.updatePassword(newPassword)
+    
     if (oldPassword === newPassword) {
       alert("New password must be different from old password");
       return;
@@ -102,13 +102,20 @@ const ClientComponent = () => {
     setConfirmPassword("");
   };
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-      </div>
-    )
-  }
+  const handleSort = (key) => {
+    setSortConfig({
+      key,
+      direction: sortConfig.key === key && sortConfig.direction === "asc" ? "desc" : "asc",
+    });
+
+    setWishlist(
+      [...wishlist].sort((a, b) => {
+        if (a[key] < b[key]) return sortConfig.direction === "asc" ? -1 : 1;
+        if (a[key] > b[key]) return sortConfig.direction === "asc" ? 1 : -1;
+        return 0;
+      }),
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
@@ -171,18 +178,48 @@ const ClientComponent = () => {
           </div>
 
           <h3 className="text-2xl font-semibold text-gray-800 mb-4">My Wishlist</h3>
-          {wishlist.length === 0 ? (
+          {(loading) && (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+                <p className="mt-4 text-gray-600">Loading Wishs...</p>
+              </div>
+          )}
+          {(wishlist.length === 0 && !loading) && (
             <p className="text-gray-600">Your wishlist is empty.</p>
-          ) : (
+          )}
+          {(wishlist.length !== 0 && !loading) && (
             <div className="overflow-x-auto">
               <table className="min-w-full bg-white">
                 <thead className="bg-gray-100">
-                  <tr>
-                    <th className="py-3 px-4 text-left">Title</th>
-                    <th className="py-3 px-4 text-left">Author</th>
-                    <th className="py-3 px-4 text-left">Price</th>
-                    <th className="py-3 px-4 text-left">Actions</th>
-                  </tr>
+                <tr>
+                      <th className="py-3 px-4 text-left">
+                        <button
+                          onClick={() => handleSort("title")}
+                          className="font-semibold hover:text-purple-600 transition-colors focus:outline-none flex items-center"
+                        >
+                          Title {sortConfig.key === "title" && (sortConfig.direction === "asc" ? <ArrowUp/> : <ArrowDown/>)}
+                        </button>
+                      </th>
+                      <th className="py-3 px-4 text-left">
+                        <button
+                          onClick={() => handleSort("author")}
+                          className="font-semibold hover:text-purple-600 transition-colors focus:outline-none flex items-center"
+                        >
+                          Author {sortConfig.key === "author" && (sortConfig.direction === "asc" ? <ArrowUp/> : <ArrowDown/>)}
+                        </button>
+                      </th>
+                      <th className="py-3 px-4 text-left">
+                        <button
+                          onClick={() => handleSort("price")}
+                          className="font-semibold hover:text-purple-600 transition-colors focus:outline-none flex items-center"
+                        >
+                          Price {sortConfig.key === "price" && (sortConfig.direction === "asc" ? <ArrowUp/> : <ArrowDown/>)}
+                        </button>
+                      </th>
+                      <th className="py-3 px-4 text-left">
+                        Actions
+                      </th>
+                    </tr>
                 </thead>
                 <tbody>
                   {wishlist.map((book) => (
