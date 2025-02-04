@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { FetchAllBooks } from "../Firebase/BookCRUD";
+import { AddToCart } from "../Firebase/CartCRUD";
 import HeroSection from "./HeroSection";
 
 const HomeComponent = () => {
@@ -32,7 +33,9 @@ const HomeComponent = () => {
                   <p className="text-sm text-gray-700 mb-4 line-clamp-3">{book.summary}</p>
                   <div className="flex justify-between items-center">
                     <p className="text-lg font-bold text-blue-500">Rs.{book.price}</p>
-                    <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300">
+                    <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300"
+                      onClick={() => AddToCart(book)}
+                    >
                       Add to Cart
                     </button>
                   </div>
