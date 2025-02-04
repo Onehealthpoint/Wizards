@@ -1,67 +1,94 @@
-// src/components/BookGrid.js
+import { db } from '../Firebase/Init';
+import { collection, doc, query, where, getDocs, addDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { IsBookValid } from '../Helper/HelperFunctions';
 
-const books = [
-    {
-      title: "Palpasa Café",
-      author: "Narayan Wagle",
-      price: "Rs. 500",
-      image: "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1537611048i/23618412.jpg",
-    },
-    {
-      title: "The Alchemist",
-      author: "Paulo Coelho",
-      price: "Rs. 1600",
-      image: "https://m.media-amazon.com/images/I/71zHDXu1TaL._AC_UF1000,1000_QL80_.jpg",
-    },
-    {
-      title: "Pride and Prejudice",
-      author: "Jane Austen",
-      price: "Rs. 1800",
-      image: "https://booksmandala.com/_next/image?url=https%3A%2F%2Fbooks.bizmandala.com%2Fmedia%2Fbooks%2F9789387779679%2Fimage_15j5s9V.jpeg&w=1080&q=75",
-    },
-    {
-      title: "Me Before You",
-      author: "Jojo Moyes",
-      price: "Rs. 1278",
-      image: "https://cdn2.penguin.com.au/covers/original/9780718177027.jpg",
-    },
-    {
-      title: "The Da Vinci Code",
-      author: "Dan Brown",
-      price: "Rs. 2238",
-      image: "https://media.thuprai.com/products/9780552161275.jpg",
-    },
+
+export const FetchAllBooks = async () => {
+    try{
+        const books = [];
+        const querySnapshot = await getDocs(collection(db, "Books"));
+        querySnapshot.forEach((doc) => {
+            books.push(doc.data());
+        });
+        return books;
+    }catch(e){
+        console.error("Error CRUD:FetchAllBooks ==> ", e);
+    }
+    return [];
+};
+
+export const AddBook = async (book) => {
+    // Check if book fields are empty
+    if(!IsBookValid(book)){
+        console.log("Book fields cannot be empty");
+        return;
+    }
+    try{
+        const q = query(collection(db, "Books"), where("ISBN", "==", book.ISBN));
+        const querySnapshot = await getDocs(q);
+        // Check if book already exists
+        if(querySnapshot.size !== 0){
+            console.log("Book already exists");
+            return;
+        }
+        await addDoc(collection(db, "Books"), book);
+        console.log("Book added successfully [", book.title, " ( ", book.ISBN, " )]");
+    }catch(e){
+        console.error("Error CRUD:AddBook ==> ", e);
+    }
+};
+
+export const UpdateBook = async (book) => {
+    // Check if book fields are empty
+    if(!IsBookValid(book)){
+        console.log("Book fields cannot be empty");
+        return;
+    }
+    try{
+        const q = query(collection(db, "Books"), where("ISBN", "==", book.ISBN));
+        const querySnapshot = await getDocs(q);
+        if(querySnapshot.size === 0){
+            console.log("Book not found");
+            return;
+        }
+        for (const docObj of querySnapshot.docs) {
+            await updateDoc(doc(db, "Books", docObj.id), book);
+        }
+    }catch(e){
+        console.error("Error CRUD:UpdateBook ==> ", e);
+    }
+};
+
+export const RemoveBook = async (bookId) => {
+    try{
+        const q = query(collection(db, "Books"), where("ISBN", "==", bookId));
+        const q_cart = query(collection(db, "Carts"), where("ISBN", "==", bookId));
+        const q_wish = query(collection(db, "Wishlist"), where("ISBN", "==", bookId));
+        const querySnapshot = await getDocs(q);
+        const querySnapshot_cart = await getDocs(q_cart);
+        const querySnapshot_wish = await getDocs(q_wish);
+        if(querySnapshot.size === 0){
+            console.log("Book not found");
+            return;
+        }
+        for (const docObj of querySnapshot.docs) {
+            await deleteDoc(doc(db, "Books", docObj.id));
+            
+        }
+        for (const docObj of querySnapshot_cart.docs) {
+            await deleteDoc(doc(db, "Carts", docObj.id));
+        }
+        for (const docObj of querySnapshot_wish.docs) {
+            await deleteDoc(doc(db, "Wishlist", docObj.id));
+        }
+    }catch(e){
+        console.error("Error CRUD:RemoveBook ==> ", e);
+    }
     
-  ];
-  
-  const BookGrid = () => {
-    return (
-        <div className="max-w-screen-lg mx-auto p-4">
-        <h1 className="text-2xl font-bold mb-6">Best Sellers</h1>
-        <p className="mb-6 text-gray-600">Find Your Next Great Read Among Our Best Sellers.</p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {books.map((book, index) => (
-            <div
-              key={index}
-              className="border rounded-lg shadow-lg p-4 flex flex-col items-center"
-            >
-              <img
-                src={book.image}
-                alt={book.title}
-                className="w-32 h-48 object-cover mb-4"
-              />
-              <h2 className="text-lg font-medium text-center">{book.title}</h2>
-              <p className="text-sm text-gray-600 mb-2">{book.author}</p>
-              <p className="font-semibold text-blue-600">{book.price}</p>
-              <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                Add to Cart
-              </button>
-            </div>
-          ))}
-        </div>
-      </div>     
-    );
-  };
-  
-  export default BookGrid;
-  
+};
+export default{
+      FetchAllBooks,
+      AddBook,
+      RemoveBook,
+      UpdateBook
+    };
