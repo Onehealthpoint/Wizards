@@ -33,7 +33,6 @@ const AdminComponent = () => {
         }else{
             setAdminName("Admin");
         }
-        console.log("Admin Name: ", User);
     }, [User]);
   
     useEffect(() => {
@@ -294,7 +293,10 @@ const AdminComponent = () => {
                             <td className="py-3 px-4">${book.price}</td>
                             <td className="py-3 px-4">
                               <button
-                                onClick={() => handleEdit(book.ISBN)}
+                                onClick={() => {
+                                  handleEdit(book.ISBN);
+                                  window.scrollTo({ top: 0, behavior: "smooth" });
+                                }}
                                 className="text-blue-500 hover:text-blue-600 mr-2"
                               >
                                 <PencilIcon className="w-5 h-5" />

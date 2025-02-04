@@ -19,7 +19,6 @@ const ClientComponent = () => {
     const loadUserData = async () => {
       try {
         setLoading(true);
-        console.log(User);
         if(User){
           setUser({
             name: User.displayName,

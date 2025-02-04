@@ -36,7 +36,6 @@ export const RemoveFromWishlist = async (UID, ISBN) => {
 };
 
 export const FetchWishlist = async (UID) => {
-    console.log(UID);
     try{
         const books = [];
         const q = query(collection(db, "Wishlists"), where("UID", "==", UID));
