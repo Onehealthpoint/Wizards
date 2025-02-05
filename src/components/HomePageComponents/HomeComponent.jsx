@@ -20,7 +20,7 @@ const HomeComponent = () => {
         <h2 className="text-2xl font-bold text-gray-800 mb-4">All Books</h2>
         <div className="flex justify-center">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {books.slice(0,10).map((book, index) => (
+            {books.map((book, index) => (
               <div
                 key={index}
                 className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105"
