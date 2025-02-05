@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import SearchBar from "../SearchBar/SearchBar";
 import { signOut } from "firebase/auth";
 import { useAuth, auth } from "../Firebase/Auth";
-import { LogOut, LogIn, User2, ShoppingBag } from "lucide-react";
+import { LogOut, CircleUserRound, User2, ShoppingBag, HomeIcon } from "lucide-react";
 
 
 const Navbar = () => {
@@ -10,6 +10,13 @@ const Navbar = () => {
 
     const navList = (
         <ul className="flex space-x-3 text-white font-medium text-md px-5 lg:gap-3">
+            <li>
+                <Link 
+                    to={'/'}
+                >
+                    <HomeIcon size={30} />
+                </Link>
+            </li>
             {
                 User? (
                     <li>
@@ -27,7 +34,7 @@ const Navbar = () => {
                         <Link 
                             to={'/login'}
                         >
-                            <LogIn size={30} />
+                            <CircleUserRound size={30} />
                         </Link>
                     </li>
                 )
