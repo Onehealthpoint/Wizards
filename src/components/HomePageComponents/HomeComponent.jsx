@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { FetchAllBooks } from "../Firebase/BookCRUD";
 import { AddToCart } from "../Firebase/CartCRUD";
+import { useAuth } from "../Firebase/Auth";
 import HeroSection from "./HeroSection";
 
 const HomeComponent = () => {
+  const { UID } = useAuth();
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
@@ -34,7 +36,7 @@ const HomeComponent = () => {
                   <div className="flex justify-between items-center">
                     <p className="text-lg font-bold text-blue-500">Rs.{book.price}</p>
                     <button className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-300"
-                      onClick={() => AddToCart(book)}
+                      onClick={() => AddToCart(UID, book.ISBN, 1)}
                     >
                       Add to Cart
                     </button>

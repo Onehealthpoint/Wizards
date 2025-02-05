@@ -1,55 +1,57 @@
 import { Link } from "react-router-dom";
 import SearchBar from "../SearchBar/SearchBar";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "../Firebase/Auth";
-import { useState, useEffect } from "react";
+import { signOut } from "firebase/auth";
+import { useAuth, auth } from "../Firebase/Auth";
+import { LogOut, LogIn, User2, ShoppingBag } from "lucide-react";
 
 
 const Navbar = () => {
-    const [LoggedIn, setLoggedIn] = useState(false);
-
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-          if (user) {
-            setLoggedIn(true);
-          } else {
-            setLoggedIn(false);
-          }
-        });
-        return () => unsubscribe();
-      }, []);
+    const { User } = useAuth();
 
     const navList = (
-        <ul className="flex space-x-3 text-white font-medium text-md px-5 ">
-            <li>
-                <Link to={'/'}>Home</Link>
-            </li>
-
-            <li>
-                <Link to={'/category'}>Category</Link>
-            </li>
-
+        <ul className="flex space-x-3 text-white font-medium text-md px-5 lg:gap-3">
             {
-                LoggedIn? (
+                User? (
                     <li>
-                        <Link to={'/'} onClick={()=>{signOut(auth)}}>Logout</Link>
+                        <Link 
+                            to={'/'} 
+                            onClick={()=>{
+                                signOut(auth);
+                            }}
+                        >
+                            <LogOut size={30} />
+                        </Link>
                     </li>
                 ) : (
                     <li>
-                        <Link to={'/login'}>Signup</Link>
+                        <Link 
+                            to={'/login'}
+                        >
+                            <LogIn size={30} />
+                        </Link>
                     </li>
                 )
             }
 
-            <li>
-                <Link to={'/User'}>User</Link>
-            </li>
+            {(User) && (
+                <>
+                    <li>
+                        <Link 
+                            to={'/User'}
+                        >
+                            <User2 size={30} />
+                        </Link>
+                    </li>
 
-            <li>
-                <Link to={'/cart'}>
-                    Cart(0)
-                </Link>
-            </li>
+                    <li>
+                        <Link 
+                            to={'/cart'}
+                        >
+                            <ShoppingBag size={30} />
+                        </Link>
+                    </li>
+                </>
+            )}
         </ul>
     );
 
@@ -62,11 +64,12 @@ const Navbar = () => {
                     </Link>
                 </div>
 
-                <div className="right flex justify-center mb-4 lg:mb-0">
+                <div className="right flex justify-center items-center mb-4 lg:mb-0 lg:gap-4">
                     {navList}
+                    <SearchBar />
                 </div>
 
-                <SearchBar />
+                
             </div>
         </nav>
     );

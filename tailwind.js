@@ -15,7 +15,6 @@ module.exports = {
       ping: 'ping 1s cubic-bezier(0, 0, 0.2, 1) infinite',
       pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       bounce: 'bounce 1s infinite',
-      drawCart: 'drawCart 0.5s linear infinite', // custom animation for drawing cart on cart page
     },
     aria: {
       busy: 'busy="true"',
@@ -595,11 +594,6 @@ module.exports = {
           transform: 'none',
           animationTimingFunction: 'cubic-bezier(0,0,0.2,1)',
         },
-      },
-      // custom keyframes for drawing a path
-      drawCart: {
-        '0%': { strokeDashoffset: '5800' },
-        '100%': { strokeDashoffset: '0' },
       },
     },
     letterSpacing: {
