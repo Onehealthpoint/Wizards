@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { FetchAllBooks, AddBook, UpdateBook, RemoveBook } from "../Firebase/BookCRUD";
 import { IsBookValid } from "../Helper/HelperFunctions";
-import { PlusIcon, PencilIcon, TrashIcon, UploadIcon } from "lucide-react"
+import { PlusIcon, PencilIcon, TrashIcon, UploadIcon, ArrowDown, ArrowUp } from "lucide-react"
 import { useAuth } from "../Firebase/Auth";
 
 
@@ -24,6 +24,7 @@ const AdminComponent = () => {
     const [edit, setEdit] = useState(false);
     const [loading, setLoading] = useState(false);
     const [adminName, setAdminName] = useState("");
+    const [sortConfig, setSortConfig] = useState({ key: "title", direction: "asc" });
   
     const [book, setBook] = useState(initialBookState);
 
@@ -33,7 +34,6 @@ const AdminComponent = () => {
         }else{
             setAdminName("Admin");
         }
-        console.log("Admin Name: ", User);
     }, [User]);
   
     useEffect(() => {
@@ -141,6 +141,21 @@ const AdminComponent = () => {
       } finally {
         setLoading(false);
       }
+    };
+
+    const handleSort = (key) => {
+      setSortConfig({
+        key,
+        direction: sortConfig.key === key && sortConfig.direction === "asc" ? "desc" : "asc",
+      });
+  
+      setBooklist(
+        [...booklist].sort((a, b) => {
+          if (a[key] < b[key]) return sortConfig.direction === "asc" ? -1 : 1;
+          if (a[key] > b[key]) return sortConfig.direction === "asc" ? 1 : -1;
+          return 0;
+        }),
+      );
     };
   
     return (
@@ -278,10 +293,33 @@ const AdminComponent = () => {
                 <table className="min-w-full bg-white">
                   <thead className="bg-gray-100">
                     <tr>
-                      <th className="py-3 px-4 text-left">Title</th>
-                      <th className="py-3 px-4 text-left">Author</th>
-                      <th className="py-3 px-4 text-left">Price</th>
-                      <th className="py-3 px-4 text-left">Actions</th>
+                      <th className="py-3 px-4 text-left">
+                        <button
+                          onClick={() => handleSort("title")}
+                          className="font-semibold hover:text-purple-600 transition-colors focus:outline-none flex items-center"
+                        >
+                          Title {sortConfig.key === "title" && (sortConfig.direction === "asc" ? <ArrowUp/> : <ArrowDown/>)}
+                        </button>
+                      </th>
+                      <th className="py-3 px-4 text-left">
+                        <button
+                          onClick={() => handleSort("author")}
+                          className="font-semibold hover:text-purple-600 transition-colors focus:outline-none flex items-center"
+                        >
+                          Author {sortConfig.key === "author" && (sortConfig.direction === "asc" ? <ArrowUp/> : <ArrowDown/>)}
+                        </button>
+                      </th>
+                      <th className="py-3 px-4 text-left">
+                        <button
+                          onClick={() => handleSort("price")}
+                          className="font-semibold hover:text-purple-600 transition-colors focus:outline-none flex items-center"
+                        >
+                          Price {sortConfig.key === "price" && (sortConfig.direction === "asc" ? <ArrowUp/> : <ArrowDown/>)}
+                        </button>
+                      </th>
+                      <th className="py-3 px-4 text-left">
+                        Actions
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -294,7 +332,10 @@ const AdminComponent = () => {
                             <td className="py-3 px-4">${book.price}</td>
                             <td className="py-3 px-4">
                               <button
-                                onClick={() => handleEdit(book.ISBN)}
+                                onClick={() => {
+                                  handleEdit(book.ISBN);
+                                  window.scrollTo({ top: 0, behavior: "smooth" });
+                                }}
                                 className="text-blue-500 hover:text-blue-600 mr-2"
                               >
                                 <PencilIcon className="w-5 h-5" />
