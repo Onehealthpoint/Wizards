@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { FetchAllBooks } from "./BookGrid";
+import { FetchAllBooks } from "../Firebase/BookCRUD";
 import HeroSection from "./HeroSection";
 
 const HomeComponent = () => {
