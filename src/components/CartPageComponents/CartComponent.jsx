@@ -1,15 +1,18 @@
 import { useState, useEffect } from "react";
-import { MinusIcon, PlusIcon, ShoppingCartIcon, HeartIcon, TrashIcon, CreditCardIcon, BanknoteIcon, SaveIcon } from "lucide-react";
+import { MinusIcon, PlusIcon, ShoppingCartIcon, HeartIcon, TrashIcon, CreditCardIcon, BanknoteIcon, SaveIcon, TruckIcon } from "lucide-react";
 import { FetchCart, RemoveFromCart, UpdateCart } from "../Firebase/CartCRUD";
 import { AddToWishlist } from "../Firebase/WishlistCRUD";
 import { useAuth } from "../Firebase/Auth";
+import PaymentGateway from "../PaymentComponents/PaymentGateway";
 
 const CartComponent = () => {
     const {UID} = useAuth();
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
-
-    console.log(UID);
+    const [total, setTotal] = useState(0);
+    const [subTotal, setSubTotal] = useState(0);
+    const shippingFee = 100;
+    const discount = 50;
   
     useEffect(() => {
       const loadCartItems = async () => {
@@ -42,21 +45,33 @@ const CartComponent = () => {
         alert("Quantity saved successfully");
     };
   
-    const buyItem = (ISBN) => {
-      console.log(`Buying item with id: ${ISBN}`);
-      // Implement buy logic here
-      removeFromCart(ISBN);
+    const buyItem = (book) => {
+      
     };
   
     const buyCart = (paymentMethod) => {
       console.log(`Buying entire cart with ${paymentMethod} payment`);
-      // Implement buy cart logic here
+      if (paymentMethod === "online") {
+        
+      }
+      if (paymentMethod === "cash") {
+        
+      }
     };
   
-    const calculateTotal = () => {
-      return cartItems.reduce((total, book) => total + book.price * book.quantity, 0);
-    };
-  
+    useEffect(() => {
+      const calculateSubTotal = () => {
+        setSubTotal(cartItems.reduce((total, book) => total + book.price * book.quantity, 0));
+      };
+
+      const calculateTotal = () => {
+          setTotal((subTotal- (subTotal * discount) / 100));
+      };
+
+      calculateSubTotal();
+      calculateTotal();
+    }, [cartItems, subTotal]);
+
     const moveToWishlist = async(ISBN) => {
       await AddToWishlist(UID, ISBN);
       removeFromCart(ISBN);
@@ -117,7 +132,7 @@ const CartComponent = () => {
                     </div>
                     <div className="flex flex-col space-y-2 ml-4">
                       <button
-                        onClick={() => buyItem(book.ISBN)}
+                        onClick={() => buyItem(book.ISBN, book.price)}
                         className="bg-purple-700 text-white px-4 py-1 rounded hover:bg-purple-800 transition-colors flex items-center justify-center"
                       >
                         <ShoppingCartIcon className="w-4 h-4 mr-1" /> Buy Now
@@ -141,21 +156,17 @@ const CartComponent = () => {
               <div className="lg:w-1/3 mt-8 lg:mt-0">
                 <div className="bg-purple-900 p-6 rounded-lg">
                   <h2 className="text-2xl font-bold text-purple-300 mb-4">Cart Summary</h2>
-                  <p className="text-xl text-purple-700 mb-4">Total: ${calculateTotal()}</p>
+                  <p className="text-xl text-purple-700 mb-4">SubTotal: ${subTotal}</p>
+                  <p className="text-xl text-purple-700 mb-4">Shipping Fee: ${shippingFee}</p>
+                  <p className="text-xl text-purple-700 mb-4">Discount: {discount}% </p>
+                  <p className="text-xl text-purple-700 mb-4">Total: ${total + shippingFee}</p>
                   <div className="space-y-4">
                     <button
                       onClick={() => buyCart("online")}
                       className="w-full bg-purple-700 text-white py-2 px-4 rounded-lg hover:bg-purple-800 transition-colors flex items-center justify-center"
                     >
-                      <CreditCardIcon className="w-5 h-5 mr-2" />
-                      Pay Now (Online)
-                    </button>
-                    <button
-                      onClick={() => buyCart("cash")}
-                      className="w-full bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors flex items-center justify-center"
-                    >
-                      <BanknoteIcon className="w-5 h-5 mr-2" />
-                      Cash on Delivery
+                      <TruckIcon className="w-6 h-6 mr-2" />
+                      Buy Now
                     </button>
                   </div>
                 </div>
