@@ -3,7 +3,7 @@ import { MinusIcon, PlusIcon, ShoppingCartIcon, HeartIcon, TrashIcon, CreditCard
 import { FetchCart, RemoveFromCart, UpdateCart } from "../Firebase/CartCRUD";
 import { AddToWishlist } from "../Firebase/WishlistCRUD";
 import { useAuth } from "../Firebase/Auth";
-import PaymentGateway from "../PaymentComponents/PaymentGateway";
+import PaymentGateway from "../PaymentPageComponents/PaymentGateway";
 
 const CartComponent = () => {
     const {UID} = useAuth();
@@ -11,6 +11,13 @@ const CartComponent = () => {
     const [loading, setLoading] = useState(true);
     const [total, setTotal] = useState(0);
     const [subTotal, setSubTotal] = useState(0);
+    const [name, setName] = useState("");
+    const [address, setAddress] = useState("");
+    const [phone, setPhone] = useState("");
+    const [description, setDescription] = useState("");
+    const [payForm, setPayForm] = useState(false);
+    const [paymentMethod, setPaymentMethod] = useState("");
+
     const shippingFee = 100;
     const discount = 50;
   
@@ -45,18 +52,18 @@ const CartComponent = () => {
         alert("Quantity saved successfully");
     };
   
-    const buyItem = (book) => {
-      
+    const buyItem = () => {
+      console.log(`Buying one item`);
+      setPayForm(true);
     };
-  
-    const buyCart = (paymentMethod) => {
-      console.log(`Buying entire cart with ${paymentMethod} payment`);
-      if (paymentMethod === "online") {
-        
-      }
-      if (paymentMethod === "cash") {
-        
-      }
+
+    const buyCart = () => {
+      console.log(`Buying one item`);
+      setPayForm(true);
+    };
+
+    const handlePayConfirm = () => {
+
     };
   
     useEffect(() => {
@@ -91,8 +98,8 @@ const CartComponent = () => {
     }
   
     return (
-      <div className="min-h-screen bg-gray-900 p-8">
-        <div className="max-w-6xl mx-auto bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+      <div className="min-h-screen bg-gray-900 p-8 relative">
+        <div className={`max-w-6xl mx-auto bg-gray-800 rounded-lg shadow-lg overflow-hidden ${payForm ? "blur-md" : "" }`}>
           <div className="p-8">
             <h1 className="text-3xl font-bold text-purple-300 mb-6">Your Cart</h1>
             <div className="flex flex-col lg:flex-row">
@@ -107,7 +114,8 @@ const CartComponent = () => {
                     <div className="flex-grow">
                       <h3 className="text-xl font-semibold text-purple-300">{book.title}</h3>
                       <p className="text-purple-400">{book.author}</p>
-                      <p className="text-purple-700 font-bold mt-2">${book.price}</p>
+                      <p className="text-gray-400 font-semibold text-sm mt-2">Rs. {book.price}</p>
+                      <p className="text-gray-500 font-bold mt-2">Rs. {book.price * book.quantity}</p>
                       <div className="flex items-center mt-2">
                         <button
                           onClick={() => updateQuantity(book.ISBN, book.quantity - 1)}
@@ -124,15 +132,16 @@ const CartComponent = () => {
                         </button>
                         <button
                           onClick={() => saveQuantity(book.ISBN, book.quantity)}
-                          className="bg-green-900 text-green-300 ml-5 px-2 py-1"
+                          className="bg-green-900 text-green-300 mx-5 px-2 py-1"
                         >
                           <SaveIcon className="w-4 h-4" />
                         </button>
+                        
                       </div>
                     </div>
                     <div className="flex flex-col space-y-2 ml-4">
                       <button
-                        onClick={() => buyItem(book.ISBN, book.price)}
+                        onClick={() => buyItem()}
                         className="bg-purple-700 text-white px-4 py-1 rounded hover:bg-purple-800 transition-colors flex items-center justify-center"
                       >
                         <ShoppingCartIcon className="w-4 h-4 mr-1" /> Buy Now
@@ -154,16 +163,16 @@ const CartComponent = () => {
                 ))}
               </div>
               <div className="lg:w-1/3 mt-8 lg:mt-0">
-                <div className="bg-purple-900 p-6 rounded-lg">
-                  <h2 className="text-2xl font-bold text-purple-300 mb-4">Cart Summary</h2>
-                  <p className="text-xl text-purple-700 mb-4">SubTotal: ${subTotal}</p>
-                  <p className="text-xl text-purple-700 mb-4">Shipping Fee: ${shippingFee}</p>
-                  <p className="text-xl text-purple-700 mb-4">Discount: {discount}% </p>
-                  <p className="text-xl text-purple-700 mb-4">Total: ${total + shippingFee}</p>
+                <div className="bg-gray-900 p-6 rounded-lg">
+                  <h2 className="text-2xl font-bold text-gray-300 mb-4">Cart Summary</h2>
+                  <p className="text-xl text-gray-500 mb-4">SubTotal: Rs. {subTotal}</p>
+                  <p className="text-xl text-gray-500 mb-4">Shipping Fee: Rs. {shippingFee}</p>
+                  <p className="text-xl text-gray-500 mb-4">Discount: {discount}% </p>
+                  <p className="text-xl text-gray-500 mb-4">Total: Rs. {total + shippingFee}</p>
                   <div className="space-y-4">
                     <button
-                      onClick={() => buyCart("online")}
-                      className="w-full bg-purple-700 text-white py-2 px-4 rounded-lg hover:bg-purple-800 transition-colors flex items-center justify-center"
+                      onClick={() => buyCart()}
+                      className="w-full bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-purple-800 transition-colors flex items-center justify-center"
                     >
                       <TruckIcon className="w-6 h-6 mr-2" />
                       Buy Now
@@ -174,7 +183,89 @@ const CartComponent = () => {
             </div>
           </div>
         </div>
+        {(payForm) && (
+          <div className="z-10 absolute  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <form className="bg-gray-50 p-6 rounded-lg mb-6">
+              <h1>Payment Form</h1>
+              <div className="mt-4 flex justify-evenly mb-6">
+                    <button
+                      type="button"
+                      className={`bg-${paymentMethod === "E-Sewa" ? "green" : "gray"}-300 hover:bg-${paymentMethod === "E-Sewa" ? "green" : "gray"}-400 text-gray-800 font-semibold py-2 px-4 rounded-lg mr-2 w-1/2 h-20`}
+                      onClick={() => { setPaymentMethod("E-Sewa") }}
+                    >
+                      <CreditCardIcon size={40} className="mx-auto"/>
+                      Pay With Esewa
+                    </button>
+                    <button
+                      type="button"
+                      className={`bg-${paymentMethod === "CoD" ? "green" : "gray"}-300 hover:bg-${paymentMethod === "CoD" ? "green" : "gray"}-400 text-gray-800 font-semibold py-2 px-4 rounded-lg w-1/2 h-20`}
+                      onClick={() => { setPaymentMethod("CoD") }}
+                    >
+                      <BanknoteIcon size={40} className="mx-auto" />
+                      Cash On Delivery
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input
+                      type="text"
+                      placeholder="Full Name"
+                      className="w-full p-2 border border-gray-300 rounded-md"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Address"
+                      className="w-full p-2 border border-gray-300 rounded-md"
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Phone"
+                      className="w-full p-2 border border-gray-300 rounded-md"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                    />
+                    <input
+                      type="text"
+                      placeholder="Amount"
+                      className="w-full p-2 border border-gray-300 rounded-md"
+                      value={`$ ${total}`}
+                      onChange={(e) => e.target.value = total}
+                    />
+                    <textarea
+                      placeholder="Description"
+                      className="w-full p-2 border border-gray-300 rounded-md col-span-2"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      rows={3}
+                    />
+                  </div>
+                  <div className="mt-4 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={handlePayConfirm}
+                      disabled={loading}
+                      className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg mr-2"
+                    >
+                      Confirm Payment
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPayForm(false);
+                      }}
+                      className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+            </form>
+          </div>
+        )}
       </div>
+      
     );
   }
   

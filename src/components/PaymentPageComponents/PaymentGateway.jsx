@@ -43,7 +43,7 @@ const PaymentGateway = ({amount, total, shippingFee, Books, type}) => {
         );
     
         setformData({ ...formData, signature: hashedSignature });
-    }, [formData.amount]);
+    }, [formData]);
 
     return (
         <form
