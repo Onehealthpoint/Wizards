@@ -1,16 +1,17 @@
 import { db } from './Init';
 import { collection, doc, query, where, getDocs, addDoc, deleteDoc } from "firebase/firestore";
 
-export const AddTransaction = async (UID, ISBN, price, quantity, total, paymentMethod, purchaseType) => {
+export const AddTransaction = async (UID, ISBN, amount, quantity, paymentMethod, name, address, phone) => {
     try{
         await addDoc(collection(db, "Transactions"), {
             UID: UID,
             ISBN: ISBN,
-            price: price,
+            amount: amount,
             quantity: quantity,
-            total: total,
             paymentMethod: paymentMethod,
-            purchaseType: purchaseType
+            name: name,
+            address: address,
+            phone: phone,
         });
     }catch(e){
         console.error("Error CRUD:AddTransaction ==> ", e);
