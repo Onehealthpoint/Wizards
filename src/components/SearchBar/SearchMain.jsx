@@ -1,11 +1,15 @@
 import { useState, useRef, useEffect } from "react"
 import { SearchBooksByTitlev2 } from "../Firebase/SearchBooks"
+import BookDetailModel from "../HomePageComponents/BookDetailModel" // Import the modal
+import Lottie from "lottie-react"
+import SearchIcon from "../Animation/Search.json"
 
-export const SearchMain = () => {
+export const SearchMain = ({ UID, username, wishlistClicked, cartClicked, onAddToWishlist, onAddToCart }) => {
   const [input, setInput] = useState("")
   const [results, setResults] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [showSuggestions, setShowSuggestions] = useState(false)
+  const [selectedBook, setSelectedBook] = useState(null) // Track the selected book for the modal
   const suggestionsRef = useRef(null)
 
   const fetchData = async (value) => {
@@ -40,13 +44,18 @@ export const SearchMain = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
-  }, [handleClickOutside]) // Added handleClickOutside to dependencies
+  }, [])
 
-  // New function to handle clicking on a suggestion
-  const handleSuggestionClick = (suggestion) => {
-    setInput(suggestion)
-    fetchData(suggestion)
-    setShowSuggestions(false)
+  // Handle clicking on a suggestion
+  const handleSuggestionClick = (book) => {
+    setSelectedBook(book) // Set the selected book to show details
+    setInput(book.title) // Update the input with the selected book's title
+    setShowSuggestions(false) // Hide the suggestions dropdown
+  }
+
+  // Close the modal
+  const closeBookDetails = () => {
+    setSelectedBook(null)
   }
 
   return (
@@ -61,23 +70,11 @@ export const SearchMain = () => {
           className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <button
-          className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent border-none cursor-pointer"
+          className="absolute right-1 top-1/2 transform -translate-y-1/2 bg-transparent border-none cursor-pointer"
           disabled={isLoading}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 text-gray-400"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-            />
-          </svg>
+          <Lottie animationData={SearchIcon}
+          style={{height:50, width:50}} /> {/* Corrected the usage of SearchIcon */}
           <span className="sr-only">Search</span>
         </button>
       </div>
@@ -93,7 +90,7 @@ export const SearchMain = () => {
               <div
                 key={index}
                 className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                onClick={() => handleSuggestionClick(book.title)}
+                onClick={() => handleSuggestionClick(book)} // Pass the entire book object
               >
                 {book.title}
               </div>
@@ -103,7 +100,20 @@ export const SearchMain = () => {
           ) : null}
         </div>
       )}
+
+      {/* Render the modal if a book is selected */}
+      {selectedBook && (
+        <BookDetailModel
+          book={selectedBook}
+          UID={UID}
+          username={username}
+          wishlistClicked={wishlistClicked}
+          cartClicked={cartClicked}
+          onClose={closeBookDetails}
+          onAddToWishlist={onAddToWishlist}
+          onAddToCart={onAddToCart}
+        />
+      )}
     </div>
   )
 }
-
