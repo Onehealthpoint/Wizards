@@ -70,7 +70,7 @@ const LoginComponent = () => {
         <div className="container mx-auto px-4">
             {hasAccount ? (
                 <>
-                    <form onSubmit={handleLogin} className="bg-white max-w-md mx-auto p-8 rounded-lg shadow-lg">
+                    <form onSubmit={handleLogin} className="bg-white max-w-md mx-auto mt-20 p-8 rounded-lg shadow-lg">
                         <h1 className="text-2xl font-bold text-center mt-10 p-4 text-gray-800">Log in to your account</h1>
                         <div className="mb-6">
                             <label htmlFor="email" className="block text-gray-700 font-medium mb-2">Email address</label>
