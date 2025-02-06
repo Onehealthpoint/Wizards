@@ -11,9 +11,12 @@ export const FetchCart = async (UID) => {
             let bookQuery = query(collection(db, "Books"), where("ISBN", "==", doc.data().ISBN));
             const querySnapshot = await getDocs(bookQuery);
             if(querySnapshot.size !== 0) {
-                books.push([querySnapshot.docs[0].data(), doc.data().quantity]);
+                var book = querySnapshot.docs[0].data();
+                book.quantity = doc.data().quantity;
+                books.push(book);
             }
         }
+        console.log("FetchCart", books);
         return books || [];
     }catch(e){
         console.error("Error CRUD:FetchCart ==> ", e);
