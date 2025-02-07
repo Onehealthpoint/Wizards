@@ -5,7 +5,6 @@ import CryptoJS from "crypto-js";
 
 const PaymentGateway = ({amount, shippingFee}) => {
     const host = window.location.origin;
-    const protocol = window.location.protocol;
 
     const [signature, setSignature] = useState("");
     const [formData] = useState({
@@ -16,8 +15,8 @@ const PaymentGateway = ({amount, shippingFee}) => {
         product_service_charge: "0",
         product_delivery_charge: shippingFee,
         product_code: "EPAYTEST",
-        success_url: `${protocol}//${host}/paymentsuccess`,
-        failure_url: `${protocol}//${host}/paymentfailure`,
+        success_url: `${host}/paymentsuccess`,
+        failure_url: `${host}/paymentfailure`,
         signed_field_names: "total_amount,transaction_uuid,product_code",
         secret: "8gBm/:&EnhH.1/q",
     });
@@ -44,7 +43,8 @@ const PaymentGateway = ({amount, shippingFee}) => {
             product_code,
             secret
         );
-    
+        
+        console.log(formData);
         setSignature(hashedSignature);
     }, [formData]);
 
