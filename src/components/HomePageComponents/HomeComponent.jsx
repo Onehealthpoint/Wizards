@@ -12,7 +12,7 @@ import checkAnimation from "../Animation/Check.json"
 import BookDetailsModal from "./BookDetailModel"
 
 const HomeComponent = () => {
-  const { UID, username } = useAuth() // Ensure `username` is available from `useAuth`
+  const { User, UID } = useAuth()
   const [books, setBooks] = useState([])
   const [wishlistClicked, setWishlistClicked] = useState({})
   const [cartClicked, setCartClicked] = useState({})
@@ -59,7 +59,7 @@ const HomeComponent = () => {
                 <img
                   src={book.imageUrl || "/placeholder.svg"}
                   alt={book.title}
-                  className="w-full h-48 object-cover"
+                  className="w-full h-48 object-contain mt-4"
                 />
                 <div className="p-4 flex flex-col flex-grow">
                   <h3 className="text-xl font-semibold mb-2 text-gray-800">{book.title}</h3>
@@ -76,10 +76,10 @@ const HomeComponent = () => {
                           animationData={heartAnimation}
                           loop={false}
                           autoplay
-                          style={{ width: 24, height: 24 }}
+                          style={{ width: 16, height: 16 }}
                         />
                       ) : (
-                        <HeartIcon className="w-6 h-6" />
+                        <HeartIcon className="w-4 h-4" />
                       )}
                     </button>
                     <button
@@ -91,10 +91,10 @@ const HomeComponent = () => {
                           animationData={checkAnimation}
                           loop={false}
                           autoplay
-                          style={{ width: 24, height: 24 }}
+                          style={{ width: 16, height: 16 }}
                         />
                       ) : (
-                        <ShoppingCartIcon className="w-6 h-6" />
+                        <ShoppingCartIcon className="w-4 h-4" />
                       )}
                     </button>
                   </div>
@@ -110,7 +110,7 @@ const HomeComponent = () => {
         <BookDetailsModal
           book={selectedBook}
           UID={UID}
-          username={username} // Pass the username
+          username={User.displayName}
           wishlistClicked={wishlistClicked}
           cartClicked={cartClicked}
           onClose={closeBookDetails}

@@ -1,10 +1,9 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import Lottie from "lottie-react"
 import { HeartIcon, ShoppingCartIcon, XIcon } from "lucide-react"
 import heartAnimation from "../Animation/Wish.json"
 import checkAnimation from "../Animation/Check.json"
+import submitAnimation from "../Animation/submit.json"
 import { RemoveReview, AddReview, FetchReviews } from "../Firebase/ReviewCRUD"
 
 const BookDetailsModal = ({
@@ -20,6 +19,8 @@ const BookDetailsModal = ({
   const [reviews, setReviews] = useState([])
   const [newReview, setNewReview] = useState("")
   const [newRating, setNewRating] = useState(0)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showSubmitAnimation, setShowSubmitAnimation] = useState(false)
 
   useEffect(() => {
     if (book) {
@@ -38,11 +39,17 @@ const BookDetailsModal = ({
 
   const handleAddReview = async () => {
     if (newReview.trim() && newRating > 0) {
+      setIsSubmitting(true)
+      setShowSubmitAnimation(true)
       await AddReview(UID, username, book.ISBN, newReview, newRating)
       const updatedReviews = await FetchReviews(book.ISBN)
       setReviews(updatedReviews)
       setNewReview("")
       setNewRating(0)
+      setTimeout(() => {
+        setIsSubmitting(false)
+        setShowSubmitAnimation(false)
+      }, 2000) // Hide animation after 2 seconds
     }
   }
 
@@ -65,7 +72,7 @@ const BookDetailsModal = ({
           <img
             src={book.imageUrl || "/placeholder.svg"}
             alt={book.title}
-            className="w-full md:w-1/3 h-64 object-cover rounded-lg"
+            className="w-full md:w-1/3 h-64 object-contain rounded-lg"
           />
           <div className="flex flex-col flex-grow">
             <h3 className="text-2xl font-bold text-gray-800 mb-2">{book.title}</h3>
@@ -112,15 +119,25 @@ const BookDetailsModal = ({
                       className={`text-2xl ${star <= newRating ? "text-yellow-500" : "text-gray-300"}`}
                       onClick={() => setNewRating(star)}
                     >
-                      ★
+                     ★
                     </button>
                   ))}
                 </div>
                 <button
-                  className="mt-2 bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors duration-300"
+                  className="mt-2 bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center"
                   onClick={handleAddReview}
+                  disabled={isSubmitting}
                 >
-                  Submit Review
+                  {showSubmitAnimation ? (
+                    <Lottie
+                      animationData={submitAnimation}
+                      loop={false}
+                      autoplay
+                      style={{ width: 50, height: 24 }}
+                    />
+                  ) : (
+                    "Submit"
+                  )}
                 </button>
               </div>
             </div>
