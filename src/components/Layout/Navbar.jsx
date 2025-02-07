@@ -3,6 +3,8 @@ import SearchBar from "../SearchBar/SearchBar";
 import { signOut } from "firebase/auth";
 import { useAuth, auth } from "../Firebase/Auth";
 import { LogOut, CircleUserRound, User2, ShoppingBag, HomeIcon } from "lucide-react";
+import Lottie from "lottie-react";
+import BooksAni from "../Animation/BooksAni.json";
 
 
 const Navbar = () => {
@@ -65,7 +67,8 @@ const Navbar = () => {
     return (
         <nav className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 sticky top-0 z-50">
             <div className="lg:flex lg:justify-between items-center py-3 lg:px-3 ">
-                <div className="left py-3 lg:py-0">
+            <div className="left flex items-center gap-2 lg:gap-4">
+                <Lottie animationData={BooksAni} style={{ width: "50px", height: "50px" }} />
                     <Link to={'/'}>
                         <h2 className="font-bold text-white text-2xl text-center">WIZARDS'</h2>
                     </Link>
