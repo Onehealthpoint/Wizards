@@ -11,15 +11,16 @@ const CartComponent = () => {
     const [loading, setLoading] = useState(true);
     const [total, setTotal] = useState(0);
     const [subTotal, setSubTotal] = useState(0);
+    const [amount, setAmount] = useState(0);
     const [name, setName] = useState("");
     const [address, setAddress] = useState("");
     const [phone, setPhone] = useState("");
-    const [description, setDescription] = useState("");
     const [payForm, setPayForm] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState("");
+    const [purchaseType, setPurchaseType] = useState("");
 
     const shippingFee = 100;
-    const discount = 50;
+    const discount = 5;
   
     useEffect(() => {
       const loadCartItems = async () => {
@@ -52,18 +53,43 @@ const CartComponent = () => {
         alert("Quantity saved successfully");
     };
   
-    const buyItem = () => {
+    const buyItem = (ISBN) => {
       console.log(`Buying one item`);
       setPayForm(true);
+      setPurchaseType(ISBN);
     };
 
     const buyCart = () => {
-      console.log(`Buying one item`);
-      setPayForm(true);
+        console.log(`Buying all items`);
+        setPayForm(true);
+        setPurchaseType("multiple");
     };
 
     const handlePayConfirm = () => {
-
+        if (name === "" || address === "" || phone === "" || paymentMethod === "") {
+            setPayForm(false);
+            setPaymentMethod("");
+            setName("");
+            setAddress("");
+            setPhone("");
+            setPurchaseType("");
+            setAmount(0);
+            return;
+        }
+        if (paymentMethod === "E-Sewa") {
+          document.getElementById("esewaForm").submit();
+        }
+        if (purchaseType === "") {
+            return;
+        }
+        if (purchaseType === "multiple") {
+            cartItems.forEach(book => {
+              removeFromCart(book.ISBN);
+            });
+            return;
+        }
+        removeFromCart(purchaseType);
+        setAmount(0);
     };
   
     useEffect(() => {
@@ -141,7 +167,10 @@ const CartComponent = () => {
                     </div>
                     <div className="flex flex-col space-y-2 ml-4">
                       <button
-                        onClick={() => buyItem()}
+                        onClick={() => {
+                          buyItem(book.ISBN);
+                          setAmount(book.price * book.quantity);
+                        }}
                         className="bg-purple-700 text-white px-4 py-1 rounded hover:bg-purple-800 transition-colors flex items-center justify-center"
                       >
                         <ShoppingCartIcon className="w-4 h-4 mr-1" /> Buy Now
@@ -171,7 +200,10 @@ const CartComponent = () => {
                   <p className="text-xl text-gray-500 mb-4">Total: Rs. {total + shippingFee}</p>
                   <div className="space-y-4">
                     <button
-                      onClick={() => buyCart()}
+                      onClick={() => {
+                        buyCart();
+                        setAmount(total);
+                      }}
                       className="w-full bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-purple-800 transition-colors flex items-center justify-center"
                     >
                       <TruckIcon className="w-6 h-6 mr-2" />
@@ -184,13 +216,13 @@ const CartComponent = () => {
           </div>
         </div>
         {(payForm) && (
-          <div className="z-10 absolute  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div className="md:w-1/4 z-10 fixed  top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
             <form className="bg-gray-50 p-6 rounded-lg mb-6">
               <h1>Payment Form</h1>
-              <div className="mt-4 flex justify-evenly mb-6">
+              <div className="mt-4 flex flex-col gap-4 items-center lg:flex-row lg:justify-center mb-6">
                     <button
                       type="button"
-                      className={`bg-${paymentMethod === "E-Sewa" ? "green" : "gray"}-300 hover:bg-${paymentMethod === "E-Sewa" ? "green" : "gray"}-400 text-gray-800 font-semibold py-2 px-4 rounded-lg mr-2 w-1/2 h-20`}
+                      className={`bg-${paymentMethod === "E-Sewa" ? "green" : "gray"}-300 hover:bg-${paymentMethod === "E-Sewa" ? "green" : "gray"}-400 text-gray-800 font-semibold py-2 px-4 rounded-lg w-[90%]`}
                       onClick={() => { setPaymentMethod("E-Sewa") }}
                     >
                       <CreditCardIcon size={40} className="mx-auto"/>
@@ -198,14 +230,14 @@ const CartComponent = () => {
                     </button>
                     <button
                       type="button"
-                      className={`bg-${paymentMethod === "CoD" ? "green" : "gray"}-300 hover:bg-${paymentMethod === "CoD" ? "green" : "gray"}-400 text-gray-800 font-semibold py-2 px-4 rounded-lg w-1/2 h-20`}
+                      className={`bg-${paymentMethod === "CoD" ? "green" : "gray"}-300 hover:bg-${paymentMethod === "CoD" ? "green" : "gray"}-400 text-gray-800 font-semibold py-2 px-4 rounded-lg w-[90%]`}
                       onClick={() => { setPaymentMethod("CoD") }}
                     >
                       <BanknoteIcon size={40} className="mx-auto" />
                       Cash On Delivery
                     </button>
                   </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 gap-4">
                     <input
                       type="text"
                       placeholder="Full Name"
@@ -231,22 +263,23 @@ const CartComponent = () => {
                       type="text"
                       placeholder="Amount"
                       className="w-full p-2 border border-gray-300 rounded-md"
-                      value={`$ ${total}`}
+                      value={`Rs. ${amount}`}
                       onChange={(e) => e.target.value = total}
-                    />
-                    <textarea
-                      placeholder="Description"
-                      className="w-full p-2 border border-gray-300 rounded-md col-span-2"
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      rows={3}
                     />
                   </div>
                   <div className="mt-4 flex justify-end">
                     <button
                       type="button"
-                      onClick={handlePayConfirm}
-                      disabled={loading}
+                      onClick={() => {
+                        handlePayConfirm();
+                        setPayForm(false);
+                        setPaymentMethod("");
+                        setName("");
+                        setAddress("");
+                        setPhone("");
+                        setPurchaseType("");
+                      }}
+                      disabled={loading || paymentMethod === "" || name === "" || address === "" || phone === ""}
                       className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg mr-2"
                     >
                       Confirm Payment
@@ -255,6 +288,12 @@ const CartComponent = () => {
                       type="button"
                       onClick={() => {
                         setPayForm(false);
+                        setPaymentMethod("");
+                        setName("");
+                        setAddress("");
+                        setPhone("");
+                        setPurchaseType("");
+                        setAmount(0);
                       }}
                       className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg"
                     >
@@ -262,12 +301,15 @@ const CartComponent = () => {
                     </button>
                   </div>
             </form>
+            {(paymentMethod === "E-Sewa") && (
+              <PaymentGateway amount={amount} shippingFee={shippingFee}/>
+            )}
           </div>
         )}
       </div>
       
     );
-  }
+  };
   
   export default CartComponent;
 
