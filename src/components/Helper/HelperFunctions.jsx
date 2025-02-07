@@ -18,17 +18,20 @@ export const IsBookValid = (book) => {
 
 
 export const ProfanityCheck = (review) => {
+    console.log(review);
+
     const nepaliProfanityWords = [
         "bhosdi", "bhosdika", "bitchi", "boka", "bokaa", "bahenchod", "chak", "chikdai",
         "chikeko", "chikna", "chikney", "dambo", "gandu", "gando", "haraam", "jatha",
         "jhand", "jatho", "jhant", "kando", "khalasi", "khate", "kukur", "kutta", "lado",
         "landey", "lauro", "lutte", "madharchod", "napunsak", "pute", "radi", "randi",
-        "rand", "sadi", "suar", "sukumbaasi", "syar", "tatto", "xaddey"
+        "rand", "sadi", "suar", "sukumbaasi", "syar", "tatto", "xaddey", "xada",
     ];
 
     const filter = new Filter();
-    filter.addWords(nepaliProfanityWords);
+    filter.addWords(...nepaliProfanityWords);
     return filter.isProfane(review);
+    // return true;
 };
 
 
@@ -58,7 +61,7 @@ export const IsReviewValid = (UID, username, ISBN, review, rating) => {
         return false;
     }
 
-    if (ProfanityCheck(review.review)){
+    if (ProfanityCheck(review)){
         alert("Profanity not allowed");
         return false;
     }
