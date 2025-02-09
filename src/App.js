@@ -9,6 +9,7 @@ import LoginPage from "./pages/LoginPage";
 import PaymentPage from "./pages/PaymentPage";
 import UserPage from "./pages/UserPage";
 import CategoryDetailPage from "./components/CategoryPageComponents/CategoryDetailPage";
+import SearchByAuthor from "./components/HomePageComponents/SearchByAuthor";
 
 
 function App() {
@@ -22,7 +23,8 @@ function App() {
           <Route path="/User" element={<UserPage />} />
           <Route path="/cart" element={<CartPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/payment" element={<PaymentPage />} />         
+          <Route path="/payment" element={<PaymentPage />} /> 
+          <Route path="/author/:author" element={<SearchByAuthor />} />     
         </Routes>
       </Router>
     </div>
