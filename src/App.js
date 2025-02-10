@@ -10,6 +10,7 @@ import FailedPaymentPage from "./pages/FailedPaymentPage";
 import SuccessPaymentPage from "./pages/SuccessPaymentPage";
 import UserPage from "./pages/UserPage";
 import CategoryDetailPage from "./components/CategoryPageComponents/CategoryDetailPage";
+import SearchByAuthor from "./components/HomePageComponents/SearchByAuthor";
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/paymentsuccess" element={<SuccessPaymentPage />} />      
           <Route path="/paymentfailure" element={<FailedPaymentPage />} />    
+          <Route path="/author/:author" element={<SearchByAuthor />} />     
         </Routes>
       </Router>
     </div>

@@ -24,14 +24,15 @@ export const AddReview = async (UID, username, ISBN, review, rating) => {
             console.log("Review already exists");
             return;
         }
-        if(!IsReviewValid(UID, username, ISBN, review, rating))
-        await addDoc(collection(db, "Reviews"), {
-            UID: UID,
-            ISBN: ISBN,
-            username: username,
-            review: review,
-            rating: rating
-        });
+        if(IsReviewValid(UID, username, ISBN, review, rating)){
+            await addDoc(collection(db, "Reviews"), {
+                UID: UID,
+                ISBN: ISBN,
+                username: username,
+                review: review,
+                rating: rating
+            });
+        }
     }catch(e){
         console.error("Error CRUD:AddReview ==> ", e);
     }
