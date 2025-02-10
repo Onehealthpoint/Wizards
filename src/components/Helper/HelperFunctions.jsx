@@ -65,3 +65,23 @@ export const IsReviewValid = (UID, username, ISBN, review, rating) => {
 
     return true;
 };
+
+
+export const getDateTime = () => {
+        const now = new Date();
+        
+        const day = now.getDate();
+        const month = now.toLocaleString("en-US", { month: "short" });
+        const year = now.getFullYear();
+    
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
+        const seconds = now.getSeconds();
+    
+        const formattedMinutes = String(minutes).padStart(2, "0");
+        const formattedSeconds = String(seconds).padStart(2, "0");
+    
+        const formattedDateTime = `${day}${month}${year}-${hours}-${formattedMinutes}-${formattedSeconds}`;
+        
+        return(formattedDateTime);
+    };

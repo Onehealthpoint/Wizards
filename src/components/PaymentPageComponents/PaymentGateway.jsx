@@ -1,17 +1,18 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
 import CryptoJS from "crypto-js";
 
-const PaymentGateway = ({amount, shippingFee}) => {
+const PaymentGateway = ({amount, shippingFee, TID}) => {
     const host = window.location.origin;
-
+    
+    
+    
     const [signature, setSignature] = useState("");
     const [formData] = useState({
         amount: amount,
         tax_amount: "0",
         total_amount: amount + shippingFee,
-        transaction_uuid: uuidv4(),
+        transaction_uuid: TID,
         product_service_charge: "0",
         product_delivery_charge: shippingFee,
         product_code: "EPAYTEST",
@@ -21,7 +22,6 @@ const PaymentGateway = ({amount, shippingFee}) => {
         secret: "8gBm/:&EnhH.1/q",
     });
     
-    // generate signature function
     const generateSignature = (
         total_amount,
         transaction_uuid,
@@ -34,7 +34,6 @@ const PaymentGateway = ({amount, shippingFee}) => {
         return hashedSignature;
     };
     
-    // useeffect
     useEffect(() => {
         const { total_amount, transaction_uuid, product_code, secret } = formData;
         const hashedSignature = generateSignature(

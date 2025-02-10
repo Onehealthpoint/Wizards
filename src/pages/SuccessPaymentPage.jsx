@@ -1,10 +1,10 @@
 import Layout from "../components/Layout/Layout";
-import PaymentComponent from "../components/PaymentPageComponents/PaymentComponent";
+import SuccessPaymentComponent from "../components/PaymentPageComponents/SuccessPaymentComponent";
 
 const PaymentPage = () => {
     return (
         <Layout>
-            <PaymentComponent />
+            <SuccessPaymentComponent />
         </Layout>
     );
 };

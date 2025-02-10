@@ -65,7 +65,7 @@ const Navbar = () => {
     );
 
     return (
-        <nav className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 sticky top-0 z-50">
+        <nav className="bg-gradient-to-b from-purple-700 to-fuchsia-500 sticky top-0 z-50">
             <div className="lg:flex lg:justify-between items-center py-3 lg:px-3 ">
             <div className="left flex items-center gap-2 lg:gap-4">
                 <Lottie animationData={BooksAni} style={{ width: "50px", height: "50px" }} />
