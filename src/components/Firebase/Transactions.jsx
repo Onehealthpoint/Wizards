@@ -49,3 +49,16 @@ export const DeleteTransaction = async (UID, transaction_uuid) => {
         console.error("Error CRUD:DeleteTransaction ==> ", e);
     }
 }
+
+export const FetchTransactionByUUID = async (transaction_uuid) => {
+    try {
+        const q = query(collection(db, "Transactions"), where("transaction_uuid", "==", transaction_uuid));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+            return querySnapshot.docs[0].data();
+        }
+        return null;
+    } catch (e) {
+        console.error("Error CRUD:FetchTransactionByUUID ==> ", e);
+    }
+}
