@@ -1,26 +1,39 @@
 import { useState, useEffect } from "react";
 import { MinusIcon, PlusIcon, ShoppingCartIcon, HeartIcon, TrashIcon, CreditCardIcon, BanknoteIcon, SaveIcon, TruckIcon } from "lucide-react";
 import { FetchCart, RemoveFromCart, UpdateCart } from "../Firebase/CartCRUD";
+import { AddTransaction } from "../Firebase/Transactions";
 import { AddToWishlist } from "../Firebase/WishlistCRUD";
+import { getDateTime } from "../Helper/HelperFunctions";
 import { useAuth } from "../Firebase/Auth";
 import PaymentGateway from "../PaymentPageComponents/PaymentGateway";
 
 const CartComponent = () => {
-    const {UID} = useAuth();
+    const {User, UID} = useAuth();
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [total, setTotal] = useState(0);
     const [subTotal, setSubTotal] = useState(0);
     const [amount, setAmount] = useState(0);
-    const [name, setName] = useState("");
+    const [name, setName] = useState(`${User? User.displayName : ""}`);
     const [address, setAddress] = useState("");
     const [phone, setPhone] = useState("");
     const [payForm, setPayForm] = useState(false);
     const [paymentMethod, setPaymentMethod] = useState("");
     const [purchaseType, setPurchaseType] = useState("");
+    const [TID, setTID] = useState("");
 
     const shippingFee = 100;
     const discount = 5;
+
+    const setEmpty = () => {
+      setPaymentMethod("");
+      setName(`${User.displayName}`);
+      setAddress("");
+      setPhone("");
+      setPurchaseType("");
+      setAmount(0);
+      setPayForm(false);
+    };
   
     useEffect(() => {
       const loadCartItems = async () => {
@@ -65,31 +78,40 @@ const CartComponent = () => {
         setPurchaseType("multiple");
     };
 
-    const handlePayConfirm = () => {
-        if (name === "" || address === "" || phone === "" || paymentMethod === "") {
-            setPayForm(false);
-            setPaymentMethod("");
-            setName("");
-            setAddress("");
-            setPhone("");
-            setPurchaseType("");
-            setAmount(0);
-            return;
-        }
-        if (paymentMethod === "E-Sewa") {
-          document.getElementById("esewaForm").submit();
-        }
-        if (purchaseType === "") {
+    const handlePayConfirm = async () => {
+        if (name === "" || address === "" || phone === "" || paymentMethod === "" || purchaseType === "") {
+            setEmpty();
             return;
         }
         if (purchaseType === "multiple") {
-            cartItems.forEach(book => {
-              removeFromCart(book.ISBN);
-            });
-            return;
+            for(const book of cartItems){
+              await removeFromCart(book.ISBN);
+            }
         }
-        removeFromCart(purchaseType);
-        setAmount(0);
+        else{
+          await removeFromCart(purchaseType);
+        }
+
+        const order = {
+          UID: UID,
+          ISBN: purchaseType === "multiple" ? cartItems.map((book) => book.ISBN) : purchaseType,
+          quantity: purchaseType === "multiple" ? cartItems.map((book) => book.quantity) : cartItems.find((book) => book.ISBN === purchaseType).quantity,
+          name: name,
+          address: address,
+          phone: phone,
+          paymentMethod: paymentMethod,
+          purchaseType: purchaseType === "multiple" ? "multiple" : "single",
+          amount: amount,
+          transaction_uuid: TID,
+          status: "Pending"
+        };
+        await AddTransaction(order);
+
+        if (paymentMethod === "E-Sewa") {
+          setEmpty();
+          document.getElementById("esewaForm").submit();
+        }
+        setEmpty();
     };
   
     useEffect(() => {
@@ -110,7 +132,7 @@ const CartComponent = () => {
       removeFromCart(ISBN);
     };
   
-    const removeFromCart = async(ISBN) => {
+    const removeFromCart = async (ISBN) => {
         await RemoveFromCart(UID, ISBN);
         setCartItems(cartItems.filter((book) => book.ISBN !== ISBN));
     };
@@ -169,7 +191,7 @@ const CartComponent = () => {
                       <button
                         onClick={() => {
                           buyItem(book.ISBN);
-                          setAmount(book.price * book.quantity);
+                          setAmount(book.price * book.quantity + shippingFee);
                         }}
                         className="bg-purple-700 text-white px-4 py-1 rounded hover:bg-purple-800 transition-colors flex items-center justify-center"
                       >
@@ -202,7 +224,7 @@ const CartComponent = () => {
                     <button
                       onClick={() => {
                         buyCart();
-                        setAmount(total);
+                        setAmount(total + shippingFee);
                       }}
                       className="w-full bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-purple-800 transition-colors flex items-center justify-center"
                     >
@@ -223,7 +245,10 @@ const CartComponent = () => {
                     <button
                       type="button"
                       className={`bg-${paymentMethod === "E-Sewa" ? "green" : "gray"}-300 hover:bg-${paymentMethod === "E-Sewa" ? "green" : "gray"}-400 text-gray-800 font-semibold py-2 px-4 rounded-lg w-[90%]`}
-                      onClick={() => { setPaymentMethod("E-Sewa") }}
+                      onClick={() => { 
+                        setTID(`${UID}-${getDateTime()}`);
+                        setPaymentMethod("E-Sewa"); 
+                      }}
                     >
                       <CreditCardIcon size={40} className="mx-auto"/>
                       Pay With Esewa
@@ -257,7 +282,12 @@ const CartComponent = () => {
                       placeholder="Phone"
                       className="w-full p-2 border border-gray-300 rounded-md"
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      onChange={(e) => {
+                        var phoneno = /^\d{0,10}$/;
+                        if(e.target.value.match(phoneno)){
+                          setPhone(e.target.value);
+                        }
+                      }}
                     />
                     <input
                       type="text"
@@ -272,12 +302,6 @@ const CartComponent = () => {
                       type="button"
                       onClick={() => {
                         handlePayConfirm();
-                        setPayForm(false);
-                        setPaymentMethod("");
-                        setName("");
-                        setAddress("");
-                        setPhone("");
-                        setPurchaseType("");
                       }}
                       disabled={loading || paymentMethod === "" || name === "" || address === "" || phone === ""}
                       className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg mr-2"
@@ -287,13 +311,7 @@ const CartComponent = () => {
                     <button
                       type="button"
                       onClick={() => {
-                        setPayForm(false);
-                        setPaymentMethod("");
-                        setName("");
-                        setAddress("");
-                        setPhone("");
-                        setPurchaseType("");
-                        setAmount(0);
+                        setEmpty();
                       }}
                       className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg"
                     >
@@ -302,7 +320,7 @@ const CartComponent = () => {
                   </div>
             </form>
             {(paymentMethod === "E-Sewa") && (
-              <PaymentGateway amount={amount} shippingFee={shippingFee}/>
+              <PaymentGateway amount={amount} shippingFee={shippingFee} TID={TID}/>
             )}
           </div>
         )}
