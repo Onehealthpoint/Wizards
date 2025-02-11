@@ -11,6 +11,7 @@ import SuccessPaymentPage from "./pages/SuccessPaymentPage";
 import UserPage from "./pages/UserPage";
 import CategoryDetailPage from "./components/CategoryPageComponents/CategoryDetailPage";
 import SearchByAuthor from "./components/HomePageComponents/SearchByAuthor";
+import GenreMain from "./components/Genre/GenreMain";
 
 
 function App() {
@@ -26,7 +27,8 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/paymentsuccess" element={<SuccessPaymentPage />} />      
           <Route path="/paymentfailure" element={<FailedPaymentPage />} />    
-          <Route path="/author/:author" element={<SearchByAuthor />} />     
+          <Route path="/author/:author" element={<SearchByAuthor />} />   
+          <Route path="/searchbygenre/:genre" element={<GenreMain />} />
         </Routes>
       </Router>
     </div>

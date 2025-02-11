@@ -1,20 +1,22 @@
-import React, { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
-import { SearchBooksByAuthor } from "../Firebase/SearchBooks"
-import { AddToWishlist } from "../Firebase/WishlistCRUD"
+"use client"
+
+import { useEffect, useState } from "react"
+import Lottie from "lottie-react"
+import { SearchBooksByGenre } from "../Firebase/SearchBooks"
 import { AddToCart } from "../Firebase/CartCRUD"
 import { useAuth } from "../Firebase/Auth"
-import Lottie from "lottie-react"
 import { HeartIcon, ShoppingCartIcon } from "lucide-react"
+import { AddToWishlist } from "../Firebase/WishlistCRUD"
 import heartAnimation from "../Animation/Wish.json"
 import checkAnimation from "../Animation/Check.json"
+import BookDetailsModal from "../HomePageComponents/BookDetailModel"
+import { Link, useParams } from "react-router-dom"
 import loaderAnimation from "../Animation/Loading.json" // Import loader animation
-import BookDetailsModal from "./BookDetailModel"
 import Layout from "../Layout/Layout"
 
-const SearchByAuthor = () => {
-  const { author } = useParams() // Get the author name from the URL
+const GenreMain = () => {
   const { User, UID } = useAuth()
+  const { genre } = useParams() // Get the genre from the URL parameters
   const [books, setBooks] = useState([])
   const [wishlistClicked, setWishlistClicked] = useState({})
   const [cartClicked, setCartClicked] = useState({})
@@ -22,20 +24,18 @@ const SearchByAuthor = () => {
   const [loading, setLoading] = useState(true) // Add loading state
 
   useEffect(() => {
-    if (author) {
-      handleSearch(author)
+    const fetchBooks = async () => {
+      setLoading(true) // Set loading to true before fetching
+      const booksData = await SearchBooksByGenre(genre)
+      setBooks(booksData)
+      setLoading(false) // Set loading to false after fetching
     }
-  }, [author])
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
+    fetchBooks()
+  }, [genre])
 
-  const handleSearch = async (authorName) => {
-    setLoading(true) // Set loading to true before fetching
-    const results = await SearchBooksByAuthor(authorName)
-    setBooks(results)
-    setLoading(false) // Set loading to false after fetching
-  }
+  useEffect(() => {
+    window.scrollTo(0, 0) // Scroll to the top when the component mounts
+  }, [])
 
   const moveToWishlist = async (ISBN) => {
     await AddToWishlist(UID, ISBN)
@@ -57,10 +57,10 @@ const SearchByAuthor = () => {
 
   return (
     <Layout>
-      <div className="min-h-screen bg-gray-100">
+      <div className="min-h-screen bg-gray-100 ">
         <div className="container mx-auto px-4 py-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Books by {author}</h2>
-          <div className="flex justify-start">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">{genre ? `${genre} Books` : "All Books"}</h2>
+          <div className="flex justify-start items-center mb-4">
             {loading ? ( // Show loader if loading is true
               <Lottie animationData={loaderAnimation} loop autoplay style={{ width: 200, height: 200 }} />
             ) : (
@@ -78,7 +78,9 @@ const SearchByAuthor = () => {
                     />
                     <div className="p-4 flex flex-col flex-grow">
                       <h3 className="text-xl font-semibold mb-2 text-gray-800">{book.title}</h3>
-                      <p className="text-sm text-gray-500 mb-2 hover:text-blue-500">By {book.author}</p>
+                      <Link to={`/author/${book.author}`} className="text-sm text-gray-500 mb-2 hover:text-blue-500">
+                        By {book.author}
+                      </Link>
                       <p className="text-sm text-gray-700 mb-2 flex-grow">{book.summary}</p>
                       <p className="text-lg font-bold text-blue-500 mb-2">Rs.{book.price}</p>
                       <div className="flex justify-end space-x-2" onClick={(e) => e.stopPropagation()}>
@@ -139,4 +141,4 @@ const SearchByAuthor = () => {
   )
 }
 
-export default SearchByAuthor
+export default GenreMain
