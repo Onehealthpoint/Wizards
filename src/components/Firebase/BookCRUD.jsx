@@ -85,3 +85,19 @@ export const RemoveBook = async (bookId) => {
         console.error("Error CRUD:RemoveBook ==> ", e);
     }
 };
+export const GetBookNameByISBN = async (ISBN) => {
+    try {
+        const q = query(collection(db, "Books"), where("ISBN", "==", ISBN));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+            const bookDoc = querySnapshot.docs[0];
+            return bookDoc.data().title;
+        } else {
+            console.log("No such document!");
+            return null;
+        }
+    } catch (e) {
+        console.error("Error CRUD:GetBookNameByISBN ==> ", e);
+        return null;
+    }
+};

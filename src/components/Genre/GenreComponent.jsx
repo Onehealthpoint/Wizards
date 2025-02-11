@@ -1,4 +1,6 @@
-import { Film, Map, Laugh, Theater, Wand2, Ghost, Heart, Rocket, Swords } from "lucide-react"
+import { Film, Map, Laugh, Theater, Wand2, Ghost, Heart, Rocket, Swords, Search, BookOpen, Book } from "lucide-react"
+import React from "react"
+import { Link } from "react-router-dom"
 
 const genres = [
   { name: "Action", icon: Swords },
@@ -10,21 +12,24 @@ const genres = [
   { name: "Romance", icon: Heart },
   { name: "Sci-Fi", icon: Rocket },
   { name: "Thriller", icon: Film },
-  // Add more genres as needed
+  { name: "Mystery", icon: Search },
+  { name: "Non-Fiction", icon: BookOpen },
+  { name: "Fiction", icon: Book }, 
+  { name: "Philosophical", icon: BookOpen }, 
 ]
 
 const GenreComponent = () => {
   return (
       <div className="flex justify-center items-center w-full h-full p-4">
         {genres.map((genre, index) => (
-          <a
+          <Link
             key={index}
-            href={`/search/${genre.name.toLowerCase()}`}
+            to={`/searchbygenre/${genre.name}`}
             className="flex flex-col items-center space-y-2 rounded-md bg-white p-4 shadow-sm transition-all hover:bg-gray-100 hover:shadow-md"
           >
             <genre.icon className="h-8 w-8" />
             <span className="text-sm font-medium">{genre.name}</span>
-          </a>
+          </Link>
         ))}
       </div>
   )
