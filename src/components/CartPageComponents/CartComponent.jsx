@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { MinusIcon, PlusIcon, ShoppingCartIcon, HeartIcon, TrashIcon, CreditCardIcon, BanknoteIcon, SaveIcon, TruckIcon } from "lucide-react";
 import { FetchCart, RemoveFromCart, UpdateCart } from "../Firebase/CartCRUD";
 import { AddTransaction } from "../Firebase/Transactions";
@@ -8,6 +9,8 @@ import { useAuth } from "../Firebase/Auth";
 import PaymentGateway from "../PaymentPageComponents/PaymentGateway";
 
 const CartComponent = () => {
+    const navigate = useNavigate();
+
     const {User, UID} = useAuth();
     const [cartItems, setCartItems] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -114,8 +117,10 @@ const CartComponent = () => {
         if (paymentMethod === "E-Sewa") {
           setEmpty();
           document.getElementById("esewaForm").submit();
+        }else{
+          setEmpty();
+          navigate("/CodPayment");
         }
-        setEmpty();
     };
   
     const calculateAdjustedPrice = useCallback((price, quantity, printType) => {
@@ -267,6 +272,7 @@ const CartComponent = () => {
                   <p className="text-lg text-gray-700 mb-2">Discount: {discount}% on Cart</p>
                   <p className="text-xl text-gray-800 font-bold mb-4">Total: Rs. {(total + shippingFee).toFixed(2)}</p>
                   <button
+                    disabled={cartItems.length === 0}
                     onClick={() => {
                       buyCart()
                       setAmount(total + shippingFee)

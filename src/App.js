@@ -8,6 +8,7 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import FailedPaymentPage from "./pages/FailedPaymentPage";
 import SuccessPaymentPage from "./pages/SuccessPaymentPage";
+import CodPaymentPage from "./pages/CodPaymentPage";
 import UserPage from "./pages/UserPage";
 import CategoryDetailPage from "./components/CategoryPageComponents/CategoryDetailPage";
 import SearchByAuthor from "./components/HomePageComponents/SearchByAuthor";
@@ -28,6 +29,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/paymentsuccess" element={<SuccessPaymentPage />} />      
           <Route path="/paymentfailure" element={<FailedPaymentPage />} />    
+          <Route path="/CodPayment" element={<CodPaymentPage />} />   
           <Route path="/author/:author" element={<SearchByAuthor />} />   
           <Route path="/searchbygenre/:genre" element={<GenreMain />} />
           <Route path="/Delivery" element={<DeliveryPage />} />

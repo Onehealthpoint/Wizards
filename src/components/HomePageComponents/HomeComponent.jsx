@@ -121,7 +121,7 @@ const HomeComponent = () => {
         <BookDetailsModal
           book={selectedBook}
           UID={UID}
-          username={User.displayName}
+          username={User?.displayName}
           wishlistClicked={wishlistClicked}
           cartClicked={cartClicked}
           onClose={closeBookDetails}
