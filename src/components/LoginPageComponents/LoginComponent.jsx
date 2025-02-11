@@ -10,6 +10,7 @@ const LoginComponent = () => {
     const [hasAccount, setHasAccount] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState(null);
 
     const handleLogin = useCallback(
         async (e) => {
@@ -18,6 +19,7 @@ const LoginComponent = () => {
                 await signInWithEmailAndPassword(auth, email, password);
             } catch (error) {
                 console.error("LoginComponent.js ==> Login Error: ", error.message);
+                setError("Invalid email or password.");
             }
         },
         [email, password]
@@ -30,6 +32,21 @@ const LoginComponent = () => {
                 await createUserWithEmailAndPassword(auth, email, password);
             } catch (error) {
                 console.error("LoginComponent.js ==> Signup Error: ",error.message);
+                if (error.code === "auth/weak-password") {
+                    setError("Password is too weak.");
+                } else if (error.code === "auth/password-does-not-meet-requirements") {
+                    setError(
+                        error.message
+                        .replace("Firebase: Missing password requirements: ", "")
+                        .replace("(auth/password-does-not-meet-requirements).", "")
+                        .replace("[", "")
+                        .replace("]", "")
+                    );
+                } else if (error.code === "auth/email-already-in-use") {
+                    setError("Email is already in use.");
+                } else {
+                    setError("An unknown error occurred. Please contact support.");
+                }
             }
         },
         [email, password]
@@ -96,6 +113,7 @@ const LoginComponent = () => {
                                 value={password}
                             />
                         </div>
+                        {error && <div className="text-red-500 text-sm mb-6">{error}</div>}
                         <button
                             type="submit"
                             className="w-full bg-blue-500 text-white py-3 rounded font-medium hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300">
@@ -139,6 +157,7 @@ const LoginComponent = () => {
                                 value={password}
                             />
                         </div>
+                        {error && <div className="text-red-500 text-sm mb-6 text-pretty">{error}</div>}
                         <button
                             type="submit"
                             className="w-full bg-green-500 text-white py-3 rounded font-medium hover:bg-green-600 focus:outline-none focus:ring focus:ring-green-300">
