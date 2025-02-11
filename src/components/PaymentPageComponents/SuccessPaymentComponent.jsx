@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
-import { FetchTransactions, UpdateTransaction } from '../Firebase/Transactions'
+import { FetchTransactionByUIDandUUID, UpdateTransaction } from '../Firebase/Transactions'
 import { useAuth } from '../Firebase/Auth'
 import { BadgeCheck } from 'lucide-react'
 import { createDeliveryStatus } from '../Firebase/DeliveryCRUD'
