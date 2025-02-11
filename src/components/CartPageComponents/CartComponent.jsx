@@ -22,7 +22,7 @@ const CartComponent = () => {
     const [purchaseType, setPurchaseType] = useState("");
     const [TID, setTID] = useState("");
 
-    const shippingFee = 100;
+    const shippingFee = 150;
     const discount = 2;
 
     const setEmpty = () => {
@@ -99,6 +99,7 @@ const CartComponent = () => {
           UID: UID,
           ISBN: purchaseType === "multiple" ? cartItems.map((book) => book.ISBN) : purchaseType,
           quantity: purchaseType === "multiple" ? cartItems.map((book) => book.quantity) : cartItems.find((book) => book.ISBN === purchaseType).quantity,
+          printType: purchaseType === "multiple" ? cartItems.map((book) => book.printType) : cartItems.find((book) => book.ISBN === purchaseType).printType,
           name: name,
           address: address,
           phone: phone,
@@ -187,7 +188,8 @@ const CartComponent = () => {
                     />
                     <div className="flex-grow text-center sm:text-left">
                       <h3 className="text-xl font-semibold text-gray-800">{book.title}</h3>
-                      <p className="text-gray-600">{book.author}</p>
+                      <p className="text-gray-700">{book.author}</p>
+                      <p className="text-gray-600">Rs. {calculateAdjustedPrice(book.price, 1, book.printType).toFixed(2)}</p>
                       <div className="mt-2 space-y-2">
                         <select
                           className="border rounded p-1 text-sm w-full sm:w-auto"
@@ -363,7 +365,7 @@ const CartComponent = () => {
             </div>
           </div>
         )}
-        {paymentMethod === "E-Sewa" && <PaymentGateway amount={amount} shippingFee={shippingFee} TID={TID} />}
+        {paymentMethod === "E-Sewa" && <PaymentGateway amount={amount - shippingFee} shippingFee={shippingFee} TID={TID} />}
       </div>
     )
   };

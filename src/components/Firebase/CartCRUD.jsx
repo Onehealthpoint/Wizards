@@ -16,7 +16,6 @@ export const FetchCart = async (UID) => {
                 books.push(book);
             }
         }
-        console.log("FetchCart", books);
         return books || [];
     }catch(e){
         console.error("Error CRUD:FetchCart ==> ", e);
