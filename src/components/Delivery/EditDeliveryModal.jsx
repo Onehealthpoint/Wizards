@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { db } from "../Firebase/Init"
 import { doc, updateDoc } from "firebase/firestore"
+import { UpdateTransactionStatus } from "../Firebase/Transactions"
 
 const EditDeliveryModal = ({ delivery, onClose, onSave }) => {
     const [updatedDelivery, setUpdatedDelivery] = useState(delivery)
@@ -22,7 +23,9 @@ const EditDeliveryModal = ({ delivery, onClose, onSave }) => {
                 deliveryman: updatedDelivery.deliveryman,
                 remarks: updatedDelivery.remarks,
             })
-            console.log("Changes saved successfully")
+            await UpdateTransactionStatus(updatedDelivery.transaction_uuid, updatedDelivery.status);
+            console.log("Changes saved successfully") 
+                
             onSave(updatedDelivery)
         } catch (error) {
             console.error("Error saving changes: ", error)
