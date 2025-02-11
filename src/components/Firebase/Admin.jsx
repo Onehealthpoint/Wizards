@@ -3,7 +3,6 @@ import { collection, query, where, getDocs} from "firebase/firestore";
 
 
 export const IsAdmin = async (UID) => {
-    console.log("UID: ", UID);
     try{
         const q = query(collection(db, "Users"), where("UID", "==", UID));
         const adminQuerySnapshot = await getDocs(q);

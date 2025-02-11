@@ -1,10 +1,10 @@
 import { FetchWishlist, RemoveFromWishlist } from "../Firebase/WishlistCRUD";
 import { AddToCart } from "../Firebase/CartCRUD";
-import { validatePassword, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from "firebase/auth";
 import { useState, useEffect } from "react";
 import { ShoppingCartIcon, TrashIcon, ArrowUpIcon, ArrowDownIcon } from "lucide-react";
 import { useAuth, auth } from "../Firebase/Auth";
 import {Link} from "react-router-dom";
+import { useAuth, ChangePassword, ChangeProfile } from "../Firebase/Auth";
 
 const ClientComponent = () => {
   const { User, UID } = useAuth();
@@ -15,6 +15,9 @@ const ClientComponent = () => {
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [newName, setNewName] = useState(user ? user.name : "");
+  const [newPhoto, setNewPhoto] = useState("");
+  const [showEditProfile, setShowEditProfile] = useState(false);
   const [sortConfig, setSortConfig] = useState({ key: "title", direction: "asc" });
 
   useEffect(() => {
@@ -67,7 +70,7 @@ const ClientComponent = () => {
       handleRemoveFromWishlist(ISBN);
   }
 
-  const handleChangePassword = (e) => {
+  const handleChangePassword = async (e) => {
     e.preventDefault();
 
     if (newPassword !== confirmPassword) {
@@ -80,33 +83,44 @@ const ClientComponent = () => {
       return;
     }
 
-    if (!validatePassword(newPassword)) {
-      alert("Password does not meet requirements");
-      return;
+    const passwordChanged = await ChangePassword(oldPassword, newPassword);
+
+    if (passwordChanged) {
+      alert("Password updated successfully");
+    } else {
+      alert("An error occurred while updating your password");
     }
-
-    const credential = EmailAuthProvider.credential(User.email, oldPassword);
-
-    reauthenticateWithCredential(auth.currentUser, credential)
-      .then(() => {
-        updatePassword(auth.currentUser, newPassword)
-          .then(() => {
-            alert("Password updated successfully");
-          })
-          .catch((error) => {
-            console.error("Error updating password:", error);
-            alert("An error occurred while updating your password");
-          });
-      })
-      .catch((error) => {
-        console.error("Error reauthenticating user:", error);
-        alert("An error occurred while reauthenticating your account");
-      });
 
     setShowChangePassword(false);
     setOldPassword("");
     setNewPassword("");
     setConfirmPassword("");
+  };
+
+  const handleEditProfile = async (e) => {
+    e.preventDefault();
+
+    if (newName === user.name && newPhoto === user.profilePicture) {
+      alert("No changes detected");
+      return;
+    }
+    
+    const profileChanged = await ChangeProfile(newName, newPhoto);
+
+    if (profileChanged) {
+      alert("Profile updated successfully");
+      setUser({
+        name: newName,
+        email: user.email,
+        profilePicture: newPhoto,
+      });
+    } else {
+      alert("An error occurred while updating your profile");
+    }
+
+    setShowEditProfile(false);
+    setNewName("");
+    setNewPhoto("");
   };
 
   const handleSort = (key) => {
@@ -146,12 +160,29 @@ const ClientComponent = () => {
                 <div>
                   <h2 className="text-2xl font-semibold text-gray-800">{user.name}</h2>
                   <p className="text-gray-600 mb-2">{user.email}</p>
-                  <button
-                    onClick={() => setShowChangePassword(!showChangePassword)}
-                    className="text-blue-500 hover:text-blue-600"
-                  >
-                    {showChangePassword ? "Cancel" : "Change Password"}
-                  </button>
+                  <p className="flex space-x-4">
+                    <button
+                      hidden={showEditProfile}
+                      onClick={() => {
+                        setShowEditProfile(false);
+                        setShowChangePassword(!showChangePassword);
+                      }}
+                      className="text-blue-500 hover:text-blue-600"
+                    >
+                      {showChangePassword ? "Cancel" : "Change Password"}
+                    </button>
+                    <button
+                      hidden={showChangePassword}
+                      onClick={() => {
+                        setShowEditProfile(!showEditProfile);
+                        setShowChangePassword(false);
+                      }}
+                      className="text-blue-500 hover:text-blue-600"
+                    >
+                      {showEditProfile ? "Cancel" : "Edit Profile"}
+                    </button>
+                  </p>
+                  
                 </div>
               </div>
               {showChangePassword && (
@@ -185,6 +216,30 @@ const ClientComponent = () => {
                     className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg"
                   >
                     Update Password
+                  </button>
+                </form>
+              )}
+              { showEditProfile && (
+                <form onSubmit={handleEditProfile} className="mt-4 md:mt-0 md:w-1/2">
+                  <input
+                    type="text"
+                    value={newName}
+                    onChange={(e) => setNewName(e.target.value)}
+                    placeholder="Username"
+                    className="w-full p-2 border border-gray-300 rounded-md mb-2"
+                  />
+                  <input
+                    type="text"
+                    value={newPhoto}
+                    onChange={(e) => setNewPhoto(e.target.value)}
+                    placeholder="Photo URL"
+                    className="w-full p-2 border border-gray-300 rounded-md mb-2"
+                  />
+                  <button
+                    type="submit"
+                    className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg"
+                  >
+                    Update Profile
                   </button>
                 </form>
               )}
