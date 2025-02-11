@@ -1,19 +1,19 @@
 import { db } from './Init';
 import { collection, doc, query, where, getDocs, addDoc, deleteDoc, updateDoc } from "firebase/firestore";
 
-export const FetchTransactions = async (UID, transaction_uuid) => {
-    try{
-        const q = query(collection(db, "Transactions"), where("UID", "==", UID), where("transaction_uuid", "==", transaction_uuid));
+export const FetchTransactions = async (UID) => {
+    try {
+        const q = query(collection(db, "Transactions"), where("UID", "==", UID));
         const querySnapshot = await getDocs(q);
         const transactions = [];
         querySnapshot.forEach((doc) => {
             transactions.push(doc.data());
         });
         return transactions;
-    }catch(e){
+    } catch (e) {
         console.error("Error CRUD:FetchTransactions ==> ", e);
     }
-}
+};
 
 export const AddTransaction = async (order) => {
     try{
@@ -60,5 +60,19 @@ export const FetchTransactionByUUID = async (transaction_uuid) => {
         return null;
     } catch (e) {
         console.error("Error CRUD:FetchTransactionByUUID ==> ", e);
+    }
+}
+
+export const UpdateTransactionStatus = async (transaction_uuid, status) => {
+    try {
+        const q = query(collection(db, "Transactions"), where("transaction_uuid", "==", transaction_uuid));
+        const querySnapshot = await getDocs(q);
+        for (const docObj of querySnapshot.docs) {
+            await updateDoc(doc(db, "Transactions", docObj.id), {
+                status: status,
+            });
+        }
+    } catch (e) {
+        console.error("Error CRUD:UpdateTransactionStatus ==> ", e);
     }
 }

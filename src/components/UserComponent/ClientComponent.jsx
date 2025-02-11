@@ -4,7 +4,7 @@ import { validatePassword, updatePassword, reauthenticateWithCredential, EmailAu
 import { useState, useEffect } from "react";
 import { ShoppingCartIcon, TrashIcon, ArrowUpIcon, ArrowDownIcon } from "lucide-react";
 import { useAuth, auth } from "../Firebase/Auth";
-
+import {Link} from "react-router-dom";
 
 const ClientComponent = () => {
   const { User, UID } = useAuth();
@@ -123,7 +123,6 @@ const ClientComponent = () => {
       }),
     );
   };
-
   if(user.name === "" || user.email === "" || user.profilePicture === ""){
     return (
       <div className="mx-auto mt-10  w-20 h-20 rounded-full border-b-4 border-blue-400 animate-spin"></div>
@@ -135,6 +134,7 @@ const ClientComponent = () => {
         <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="p-8">
             <h1 className="text-3xl font-bold text-gray-800 mb-6">User Dashboard</h1>
+
 
             <div className="flex flex-col md:flex-row justify-between mb-8">
               <div className="flex flex-col md:flex-row items-center md:items-start mb-4 md:mb-0">
@@ -189,8 +189,13 @@ const ClientComponent = () => {
                 </form>
               )}
             </div>
-
-            <h3 className="text-2xl font-semibold text-gray-800 mb-4">My Wishlist</h3>
+            <h1 className="text-2xl font-bold mb-4">My Whislist</h1>
+            <div className="flex justify-between items-center mb-4">
+                <div></div> {/* Empty div to push the link to the right */}
+                <Link to="/UserOrdersPage" className="font-italic hover:text-blue-500">
+                    My Orders
+                </Link>
+            </div>
             {(loading) && (
                 <div className="text-center py-8">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
