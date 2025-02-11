@@ -39,8 +39,7 @@ const UserOrderStatus = () => {
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">My Orders</h1>
-            <div className="flex justify-between items-center mb-4">
-                <div></div> {/* Empty div to push the link to the right */}
+            <div className="flex justify-end mb-4">
                 <Link to="/User" className="font-italic hover:text-blue-500">
                     My WishList
                 </Link>

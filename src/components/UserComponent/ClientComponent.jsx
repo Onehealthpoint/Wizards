@@ -2,7 +2,6 @@ import { FetchWishlist, RemoveFromWishlist } from "../Firebase/WishlistCRUD";
 import { AddToCart } from "../Firebase/CartCRUD";
 import { useState, useEffect } from "react";
 import { ShoppingCartIcon, TrashIcon, ArrowUpIcon, ArrowDownIcon } from "lucide-react";
-import { useAuth, auth } from "../Firebase/Auth";
 import {Link} from "react-router-dom";
 import { useAuth, ChangePassword, ChangeProfile } from "../Firebase/Auth";
 

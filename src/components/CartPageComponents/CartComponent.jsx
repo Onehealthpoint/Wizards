@@ -4,7 +4,7 @@ import { MinusIcon, PlusIcon, ShoppingCartIcon, HeartIcon, TrashIcon, CreditCard
 import { FetchCart, RemoveFromCart, UpdateCart } from "../Firebase/CartCRUD";
 import { AddTransaction } from "../Firebase/Transactions";
 import { AddToWishlist } from "../Firebase/WishlistCRUD";
-import { getDateTime } from "../Helper/HelperFunctions";
+import { getDateTime, generateRandomCode } from "../Helper/HelperFunctions";
 import { useAuth } from "../Firebase/Auth";
 import PaymentGateway from "../PaymentPageComponents/PaymentGateway";
 
@@ -110,6 +110,7 @@ const CartComponent = () => {
           purchaseType: purchaseType === "multiple" ? "multiple" : "single",
           amount: amount,
           transaction_uuid: TID,
+          transaction_code: generateRandomCode(),
           status: "Pending"
         };
         await AddTransaction(order);
@@ -310,7 +311,10 @@ const CartComponent = () => {
                   className={`${
                     paymentMethod === "CoD" ? "bg-green-500 text-white" : "bg-gray-200 text-gray-800"
                   } hover:bg-green-600 hover:text-white font-semibold py-2 px-4 rounded-lg transition-colors flex flex-col items-center justify-center`}
-                  onClick={() => setPaymentMethod("CoD")}
+                  onClick={() => {
+                    setTID(`${UID}-${getDateTime()}`)
+                    setPaymentMethod("CoD")
+                  }}
                 >
                   <BanknoteIcon size={24} className="mb-1" />
                   Cash On Delivery
