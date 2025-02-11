@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import Lottie from "lottie-react"
 import { FetchAllBooks } from "../Firebase/BookCRUD"
