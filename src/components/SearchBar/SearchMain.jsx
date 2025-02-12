@@ -3,13 +3,21 @@ import { SearchBooksByTitlev2 } from "../Firebase/SearchBooks"
 import BookDetailModel from "../HomePageComponents/BookDetailModel" // Import the modal
 import Lottie from "lottie-react"
 import SearchIcon from "../Animation/Search.json"
+import { AddToCart } from "../Firebase/CartCRUD"
+import { AddToWishlist } from "../Firebase/WishlistCRUD"
+import { useAuth } from "../Firebase/Auth"
+import heartAnimation from "../Animation/Wish.json"
+import checkAnimation from "../Animation/Check.json"
 
-export const SearchMain = ({ UID, username, wishlistClicked, cartClicked, onAddToWishlist, onAddToCart }) => {
+export const SearchMain = ({ username, wishlistClicked, cartClicked, onAddToWishlist, onAddToCart }) => {
+  const { User,UID } = useAuth()
   const [input, setInput] = useState("")
   const [results, setResults] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [selectedBook, setSelectedBook] = useState(null) // Track the selected book for the modal
+  const [wishlistClickedState, setWishlistClickedState] = useState({})
+  const [cartClickedState, setCartClickedState] = useState({})
   const suggestionsRef = useRef(null)
 
   const fetchData = async (value) => {
@@ -56,6 +64,16 @@ export const SearchMain = ({ UID, username, wishlistClicked, cartClicked, onAddT
   // Close the modal
   const closeBookDetails = () => {
     setSelectedBook(null)
+  }
+
+  const moveToWishlist = async (ISBN) => {
+    await AddToWishlist(UID, ISBN)
+    setWishlistClickedState((prevState) => ({ ...prevState, [ISBN]: true }))
+  }
+
+  const addToCart = async (ISBN) => {
+    await AddToCart(UID, ISBN, 1)
+    setCartClickedState((prevState) => ({ ...prevState, [ISBN]: true }))
   }
 
   return (
@@ -106,12 +124,12 @@ export const SearchMain = ({ UID, username, wishlistClicked, cartClicked, onAddT
         <BookDetailModel
           book={selectedBook}
           UID={UID}
-          username={username}
-          wishlistClicked={wishlistClicked}
-          cartClicked={cartClicked}
+          username={User.displayName}
+          wishlistClicked={wishlistClickedState}
+          cartClicked={cartClickedState}
           onClose={closeBookDetails}
-          onAddToWishlist={onAddToWishlist}
-          onAddToCart={onAddToCart}
+          onAddToWishlist={moveToWishlist}
+          onAddToCart={addToCart}
         />
       )}
     </div>
