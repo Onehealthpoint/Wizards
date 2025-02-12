@@ -65,20 +65,20 @@ const UserOrderStatus = () => {
       return
     }
     try {
-      await AddToWishlist(UID, ISBN)
+      await AddToWishlist(ISBN)
       setWishlistClicked((prevState) => ({ ...prevState, [ISBN]: true }))
     } catch (error) {
       console.error("Error adding to wishlist:", error)
     }
   }
 
-  const addToCart = async (ISBN) => {
+  const addToCart = async (ISBN, qty) => {
     if (!UID) {
       console.error("User ID is undefined")
       return
     }
     try {
-      await AddToCart(UID, ISBN, 1)
+      await AddToCart(UID, ISBN, Qty)
       setCartClicked((prevState) => ({ ...prevState, [ISBN]: true }))
     } catch (error) {
       console.error("Error adding to cart:", error)
