@@ -59,7 +59,7 @@ const SearchByAuthor = () => {
     <Layout>
       <div className="min-h-screen bg-gray-100">
         <div className="container mx-auto px-4 py-8">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Books by {author}</h2>
+          <h2 className="text-2xl font-bold text-gray-800 text-cemter justify-center">Books by {author}</h2>
           <div className="flex justify-start">
             {loading ? ( // Show loader if loading is true
               <Lottie animationData={loaderAnimation} loop autoplay style={{ width: 200, height: 200 }} />
