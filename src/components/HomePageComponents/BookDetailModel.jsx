@@ -38,6 +38,9 @@ const BookDetailsModal = ({
   }
 
   const handleAddReview = async () => {
+    if (!UID) {
+      return
+    }
     if (newReview.trim() && newRating > 0) {
       setIsSubmitting(true)
       setShowSubmitAnimation(true)
@@ -103,46 +106,49 @@ const BookDetailsModal = ({
                   </div>
                 ))}
               </div>
-              <div className="mt-4">
-                <h4 className="text-lg font-semibold text-gray-800">Add a Review</h4>
-                <textarea
-                  className="w-full p-2 border rounded-md"
-                  placeholder="Write your review..."
-                  value={newReview}
-                  onChange={(e) => setNewReview(e.target.value)}
-                />
-                <div className="flex items-center mt-2">
-                  <span className="mr-2">Rating:</span>
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      className={`text-2xl ${star <= newRating ? "text-yellow-500" : "text-gray-300"}`}
-                      onClick={() => setNewRating(star)}
-                    >
-                     ★
-                    </button>
-                  ))}
+              {UID && (
+                <div className="mt-4">
+                  <h4 className="text-lg font-semibold text-gray-800">Add a Review</h4>
+                  <textarea
+                    className="w-full p-2 border rounded-md"
+                    placeholder="Write your review..."
+                    value={newReview}
+                    onChange={(e) => setNewReview(e.target.value)}
+                  />
+                  <div className="flex items-center mt-2">
+                    <span className="mr-2">Rating:</span>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        className={`text-2xl ${star <= newRating ? "text-yellow-500" : "text-gray-300"}`}
+                        onClick={() => setNewRating(star)}
+                      >
+                      ★
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    className="mt-2 bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center"
+                    onClick={handleAddReview}
+                    disabled={isSubmitting}
+                  >
+                    {showSubmitAnimation ? (
+                      <Lottie
+                        animationData={submitAnimation}
+                        loop={false}
+                        autoplay
+                        style={{ width: 50, height: 24 }}
+                      />
+                    ) : (
+                      "Submit"
+                    )}
+                  </button>
                 </div>
-                <button
-                  className="mt-2 bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center"
-                  onClick={handleAddReview}
-                  disabled={isSubmitting}
-                >
-                  {showSubmitAnimation ? (
-                    <Lottie
-                      animationData={submitAnimation}
-                      loop={false}
-                      autoplay
-                      style={{ width: 50, height: 24 }}
-                    />
-                  ) : (
-                    "Submit"
-                  )}
-                </button>
-              </div>
+              )}
             </div>
-            <div className="flex justify-end space-x-2">
+            <div className="flex justify-end space-x-2 mt-4">
               <button
+                disabled={!UID}
                 className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors duration-300"
                 onClick={() => onAddToWishlist(book.ISBN)}
               >
@@ -158,6 +164,7 @@ const BookDetailsModal = ({
                 )}
               </button>
               <button
+                disabled={!UID}
                 className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors duration-300"
                 onClick={() => onAddToCart(book.ISBN)}
               >

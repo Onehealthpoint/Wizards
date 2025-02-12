@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { useSearchParams, Link } from 'react-router-dom'
-import { FetchTransactions, UpdateTransaction } from '../Firebase/Transactions'
+import { FetchTransactionByUIDandUUID, UpdateTransaction } from '../Firebase/Transactions'
 import { useAuth } from '../Firebase/Auth'
 import { BadgeCheck } from 'lucide-react'
 import { createDeliveryStatus } from '../Firebase/DeliveryCRUD'
@@ -24,11 +24,12 @@ const SuccessPaymentComponent = () => {
     
     const update = async() => {
       try{
-        const transaction = await FetchTransactions(UID, data.transaction_uuid);
+        const transaction = await FetchTransactionByUIDandUUID(UID, data.transaction_uuid);
+        console.log(data, transaction);
         if(transaction.length !== 1) return;
         await UpdateTransaction(UID, transaction[0].transaction_uuid, data.status, data.transaction_code);
         await createDeliveryStatus(transaction[0].transaction_uuid, { status: 'Pending', created_at: new Date() });
-        console.log(transaction[0].transaction_uuid)
+        console.log(transaction);
       }
       catch(e){
         console.error("Error SuccessPaymentComponent:Update ==> ", e);

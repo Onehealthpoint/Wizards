@@ -71,20 +71,32 @@ export const IsReviewValid = (UID, username, ISBN, review, rating) => {
 
 
 export const getDateTime = () => {
-        const now = new Date();
-        
-        const day = now.getDate();
-        const month = now.toLocaleString("en-US", { month: "short" });
-        const year = now.getFullYear();
+    const now = new Date();
     
-        const hours = now.getHours();
-        const minutes = now.getMinutes();
-        const seconds = now.getSeconds();
+    const day = now.getDate();
+    const month = now.toLocaleString("en-US", { month: "short" });
+    const year = now.getFullYear();
+
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+
+    const formattedMinutes = String(minutes).padStart(2, "0");
+    const formattedSeconds = String(seconds).padStart(2, "0");
+
+    const formattedDateTime = `${day}${month}${year}-${hours}-${formattedMinutes}-${formattedSeconds}`;
     
-        const formattedMinutes = String(minutes).padStart(2, "0");
-        const formattedSeconds = String(seconds).padStart(2, "0");
-    
-        const formattedDateTime = `${day}${month}${year}-${hours}-${formattedMinutes}-${formattedSeconds}`;
-        
-        return(formattedDateTime);
-    };
+    return(formattedDateTime);
+};
+
+
+export const generateRandomCode = (length=7) => {
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    let result = "";
+
+    for (let i = 0; i < length; i++){
+        result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+
+    return result;
+};
