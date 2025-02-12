@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 import Lottie from "lottie-react"
-import { HeartIcon, ShoppingCartIcon, XIcon } from "lucide-react"
+import { Heart, ShoppingCart, X, ChevronUp, ChevronDown, Star, Minus, Plus } from "lucide-react"
 import heartAnimation from "../Animation/Wish.json"
 import checkAnimation from "../Animation/Check.json"
 import submitAnimation from "../Animation/submit.json"
@@ -16,21 +17,36 @@ const BookDetailsModal = ({
   onAddToWishlist,
   onAddToCart,
 }) => {
+  const navigate = useNavigate()
+
   const [reviews, setReviews] = useState([])
   const [newReview, setNewReview] = useState("")
   const [newRating, setNewRating] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSubmitAnimation, setShowSubmitAnimation] = useState(false)
+  const [showAddReview, setShowAddReview] = useState(false)
+  const [quantity, setQuantity] = useState(1)
+
+  const updateQuantity = (newQuantity) => {
+    const qty = Math.max(1, Math.min(10, newQuantity))
+    setQuantity(qty)
+  }
 
   useEffect(() => {
     if (book) {
       const fetchReviews = async () => {
         const reviewsData = await FetchReviews(book.ISBN)
+        //place user review at the top
+        const userReview = reviewsData.find((review) => review.UID === UID)
+        if (userReview) {
+          reviewsData.splice(reviewsData.indexOf(userReview), 1)
+          reviewsData.unshift(userReview)
+        }
         setReviews(reviewsData)
       }
       fetchReviews()
     }
-  }, [book])
+  }, [book, UID])
 
   // Don't render the modal if no book is selected
   if (!book) {
@@ -54,6 +70,7 @@ const BookDetailsModal = ({
         setShowSubmitAnimation(false)
       }, 2000) // Hide animation after 2 seconds
     }
+    setShowAddReview(false)
   }
 
   const handleRemoveReview = async () => {
@@ -63,122 +80,170 @@ const BookDetailsModal = ({
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg w-11/12 md:w-3/4 lg:w-1/2 p-6 relative">
-        <button
-          className="absolute top-4 right-4 text-gray-600 hover:text-gray-900"
-          onClick={onClose}
-        >
-          <XIcon className="w-6 h-6" />
-        </button>
-        <div className="flex flex-col md:flex-row gap-6">
-          <img
-            src={book.imageUrl || "/placeholder.svg"}
-            alt={book.title}
-            className="w-full md:w-1/3 h-64 object-contain rounded-lg"
-          />
-          <div className="flex flex-col flex-grow">
-            <h3 className="text-2xl font-bold text-gray-800 mb-2">{book.title}</h3>
-            <p className="text-sm text-gray-600 mb-2">By {book.author}</p>
-            <p className="text-sm text-gray-700 mb-4">{book.summary}</p>
-            <p className="text-lg font-bold text-blue-500 mb-4">Rs.{book.price}</p>
-            <div className="flex flex-col gap-2">
-              <h4 className="text-lg font-semibold text-gray-800">Reviews</h4>
-              <div className="flex flex-col gap-2">
-                {reviews.map((review, index) => (
-                  <div
-                    key={index}
-                    className="bg-gray-100 p-4 rounded-lg flex flex-col gap-2"
-                  >
-                    <div className="flex justify-between items-center">
-                      <p className="text-lg font-semibold text-gray-800">{review.username}</p>
-                      {review.UID === UID && (
-                        <button
-                          className="text-red-500"
-                          onClick={handleRemoveReview}
-                        >
-                          Delete
-                        </button>
-                      )}
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white relative rounded-xl shadow-xl w-full max-w-4xl overflow-hidden max-h-[95vh] md:max-h-[80vh] flex flex-col">
+        <div className="p-6 flex-grow overflow-y-auto">
+          <button onClick={onClose} className="absolute right-6 top-6 text-gray-500 hover:text-gray-700">
+            <X className="h-6 w-6" />
+          </button>
+
+          <div className="flex flex-col md:flex-row gap-8 my-8">
+            <div className="md:w-1/2 lg:w-1/3 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
+              <img
+                src={book.imageUrl || "/placeholder.svg"}
+                alt={book.title}
+                className="max-w-full max-h-[300px] object-contain"
+              />
+            </div>
+
+            <div className="md:w-1/2 lg:w-2/3 space-y-6 flex flex-col justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">{book.title}</h1>
+                <p className="text-lg text-gray-600 mt-1">{book.author}</p>
+                <div className="flex flex-wrap gap-2 mt-2">
+                  {book.genres.map((genre, index) => (
+                    <span key={index} className="px-3 py-1 bg-purple-50 text-purple-700 rounded-full text-sm">
+                      {genre}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <p className="text-gray-600 flex-grow">{book.description}</p>
+
+              <div className="space-y-4">
+                <p className="text-2xl font-bold text-purple-600">RS. {book.price}</p>
+
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center">
+                    <button
+                      onClick={() => updateQuantity(quantity - 1)}
+                      className="h-10 w-10 flex items-center justify-center bg-purple-50 text-purple-600 rounded-l-lg hover:bg-purple-100"
+                    >
+                      <Minus className="h-4 w-4" />
+                    </button>
+                    <div className="h-10 w-12 flex items-center justify-center border-y border-purple-100 bg-white text-lg">
+                      {quantity}
                     </div>
-                    <p className="text-gray-700">{review.review}</p>
-                    <p className="text-gray-600">{review.rating} / 5</p>
+                    <button
+                      onClick={() => updateQuantity(quantity + 1)}
+                      className="h-10 w-10 flex items-center justify-center bg-purple-50 text-purple-600 rounded-r-lg hover:bg-purple-100"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </button>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        if(!UID){
+                          navigate('/login')
+                        }else{
+                          onAddToCart(book.ISBN, quantity)
+                        }
+                      }}
+                      className="h-10 w-10 flex items-center justify-center bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+                    >
+                      <ShoppingCart className="h-5 w-5" />
+                    </button>
+                    <button
+                      onClick={() => {
+                        if(!UID){
+                          navigate('/login')
+                        }else{
+                          onAddToWishlist(book.ISBN)
+                        }
+                      }}
+                      className="h-10 w-10 flex items-center justify-center bg-purple-100 text-purple-600 rounded-lg hover:bg-purple-200"
+                    >
+                      <Heart className="h-5 w-5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t pt-6">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold text-gray-900">Reviews</h2>
+              {!reviews.find((book) => book.UID === UID) && (
+                <button
+                  onClick={() => setShowAddReview(!showAddReview)}
+                  className="flex items-center text-purple-600 hover:text-purple-700"
+                >
+                  {showAddReview ? (
+                    <>
+                      <ChevronUp className="h-5 w-5 mr-1" />
+                      Cancel
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="h-5 w-5 mr-1" />
+                      Add Review
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+
+            <div className={`grid gap-6 ${showAddReview ? "md:grid-cols-2" : "grid-cols-1"}`}>
+              <div className={`space-y-4 ${showAddReview ? "max-h-[300px]" : "max-h-[400px]"} overflow-y-auto pr-2`}>
+                {reviews.map((review, index) => (
+                  <div key={index} className="bg-gray-50 rounded-lg p-4 shadow-sm">
+                    <div className="flex justify-between items-center mb-2">
+                      <p className="font-medium text-gray-900">{review.username}</p>
+                      <div className="flex gap-1">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`h-4 w-4 ${
+                              i < review.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-gray-600">{review.review}</p>
+                    {review.UID === UID && (
+                      <button onClick={handleRemoveReview} className="mt-2 text-red-600 text-sm hover:underline">
+                        Delete review
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
-              {UID && (
-                <div className="mt-4">
-                  <h4 className="text-lg font-semibold text-gray-800">Add a Review</h4>
-                  <textarea
-                    className="w-full p-2 border rounded-md"
-                    placeholder="Write your review..."
-                    value={newReview}
-                    onChange={(e) => setNewReview(e.target.value)}
-                  />
-                  <div className="flex items-center mt-2">
-                    <span className="mr-2">Rating:</span>
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button
-                        key={star}
-                        className={`text-2xl ${star <= newRating ? "text-yellow-500" : "text-gray-300"}`}
-                        onClick={() => setNewRating(star)}
-                      >
-                      ★
+
+              {showAddReview && (
+                <div className="space-y-4 bg-purple-50 p-4 rounded-lg">
+                  <h3 className="font-medium text-gray-900">Add Your Review</h3>
+                  <div className="flex gap-1 mb-2">
+                    {[1, 2, 3, 4, 5].map((rating) => (
+                      <button key={rating} onClick={() => setNewRating(rating)} className="focus:outline-none">
+                        <Star
+                          className={`h-6 w-6 ${
+                            rating <= newRating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                          }`}
+                        />
                       </button>
                     ))}
                   </div>
+                  <textarea
+                    value={newReview}
+                    onChange={(e) => setNewReview(e.target.value)}
+                    placeholder="Write your review..."
+                    className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                    rows={5}
+                  />
                   <button
-                    className="mt-2 bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center"
                     onClick={handleAddReview}
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !UID}
+                    className="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 disabled:opacity-50"
                   >
-                    {showSubmitAnimation ? (
-                      <Lottie
-                        animationData={submitAnimation}
-                        loop={false}
-                        autoplay
-                        style={{ width: 50, height: 24 }}
-                      />
-                    ) : (
-                      "Submit"
-                    )}
+                    {UID ? "Submit Review" : "Login to Review"}
                   </button>
                 </div>
               )}
-            </div>
-            <div className="flex justify-end space-x-2 mt-4">
-              <button
-                disabled={!UID}
-                className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors duration-300"
-                onClick={() => onAddToWishlist(book.ISBN)}
-              >
-                {wishlistClicked[book.ISBN] ? (
-                  <Lottie
-                    animationData={heartAnimation}
-                    loop={false}
-                    autoplay
-                    style={{ width: 24, height: 24 }}
-                  />
-                ) : (
-                  <HeartIcon className="w-6 h-6" />
-                )}
-              </button>
-              <button
-                disabled={!UID}
-                className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors duration-300"
-                onClick={() => onAddToCart(book.ISBN)}
-              >
-                {cartClicked[book.ISBN] ? (
-                  <Lottie
-                    animationData={checkAnimation}
-                    loop={false}
-                    autoplay
-                    style={{ width: 24, height: 24 }}
-                  />
-                ) : (
-                  <ShoppingCartIcon className="w-6 h-6" />
-                )}
-              </button>
             </div>
           </div>
         </div>

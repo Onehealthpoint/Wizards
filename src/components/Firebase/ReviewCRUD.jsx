@@ -28,7 +28,7 @@ export const AddReview = async (UID, username, ISBN, review, rating) => {
             await addDoc(collection(db, "Reviews"), {
                 UID: UID,
                 ISBN: ISBN,
-                username: username,
+                username: username === "" ? "Anonymous" : username,
                 review: review,
                 rating: rating
             });

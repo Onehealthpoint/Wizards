@@ -124,7 +124,7 @@ export const SearchMain = ({ username, wishlistClicked, cartClicked, onAddToWish
         <BookDetailModel
           book={selectedBook}
           UID={UID}
-          username={User.displayName}
+          username={User?.displayName}
           wishlistClicked={wishlistClickedState}
           cartClicked={cartClickedState}
           onClose={closeBookDetails}

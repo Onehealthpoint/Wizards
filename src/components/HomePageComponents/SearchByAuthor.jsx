@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import { useParams } from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom"
 import { SearchBooksByAuthor } from "../Firebase/SearchBooks"
 import { AddToWishlist } from "../Firebase/WishlistCRUD"
 import { AddToCart } from "../Firebase/CartCRUD"
@@ -13,6 +13,8 @@ import BookDetailsModal from "./BookDetailModel"
 import Layout from "../Layout/Layout"
 
 const SearchByAuthor = () => {
+  const navigate = useNavigate()
+
   const { author } = useParams() // Get the author name from the URL
   const { User, UID } = useAuth()
   const [books, setBooks] = useState([])
@@ -42,8 +44,8 @@ const SearchByAuthor = () => {
     setWishlistClicked((prevState) => ({ ...prevState, [ISBN]: true }))
   }
 
-  const addToCart = async (ISBN) => {
-    await AddToCart(UID, ISBN, 1)
+  const addToCart = async (ISBN, qty) => {
+    await AddToCart(UID, ISBN, qty)
     setCartClicked((prevState) => ({ ...prevState, [ISBN]: true }))
   }
 
@@ -84,7 +86,13 @@ const SearchByAuthor = () => {
                       <div className="flex justify-end space-x-2" onClick={(e) => e.stopPropagation()}>
                         <button
                           className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors duration-300"
-                          onClick={() => moveToWishlist(book.ISBN)}
+                          onClick={async() => {
+                            if(!UID){
+                              navigate("/login");
+                            }else{
+                              await moveToWishlist(book.ISBN);
+                            }
+                          }}
                         >
                           {wishlistClicked[book.ISBN] ? (
                             <Lottie
@@ -99,7 +107,13 @@ const SearchByAuthor = () => {
                         </button>
                         <button
                           className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors duration-300"
-                          onClick={() => addToCart(book.ISBN)}
+                          onClick={async() => {
+                            if(!UID){
+                              navigate("/login");
+                            }else{
+                              await addToCart(book.ISBN, 1);
+                            }
+                          }}
                         >
                           {cartClicked[book.ISBN] ? (
                             <Lottie
@@ -126,7 +140,7 @@ const SearchByAuthor = () => {
           <BookDetailsModal
             book={selectedBook}
             UID={UID}
-            username={User.displayName}
+            username={User?.displayName}
             wishlistClicked={wishlistClicked}
             cartClicked={cartClicked}
             onClose={closeBookDetails}

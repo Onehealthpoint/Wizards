@@ -6,7 +6,7 @@ import { useAuth } from "../Firebase/Auth"
 import { Loader } from "../Loader/Loader"
 import { Link } from "react-router-dom"
 import { GetBookNameByISBN } from "../Firebase/BookCRUD"
-import { SearchBooksByTitlev2 } from "../Firebase/SearchBooks"
+import { SearchBooksByTitle } from "../Firebase/SearchBooks"
 import { AddToWishlist } from "../Firebase/WishlistCRUD"
 import { AddToCart } from "../Firebase/CartCRUD"
 import { AddReview, FetchReviews } from "../Firebase/ReviewCRUD"
@@ -46,7 +46,7 @@ const UserOrderStatus = () => {
 
   const handleBookNameClick = async (name) => {
     try {
-      const books = await SearchBooksByTitlev2(name)
+      const books = await SearchBooksByTitle(name)
       if (books.length > 0) {
         setSelectedBook(books[0])
       }
