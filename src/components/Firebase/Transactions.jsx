@@ -15,6 +15,20 @@ export const FetchTransactions = async (UID) => {
     }
 };
 
+export const FetchTransactionByUIDandUUID = async (UID, transaction_uuid) => {
+    try {
+        const q = query(collection(db, "Transactions"), where("UID", "==", UID), where("transaction_uuid", "==", transaction_uuid));
+        const querySnapshot = await getDocs(q);
+        const transactions = [];
+        querySnapshot.forEach((doc) => {
+            transactions.push(doc.data());
+        });
+        return transactions;
+    } catch (e) {
+        console.error("Error CRUD:FetchTransactions ==> ", e);
+    }
+};
+
 export const AddTransaction = async (order) => {
     try{
         await addDoc(collection(db, "Transactions"), order);

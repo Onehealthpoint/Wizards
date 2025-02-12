@@ -4,7 +4,7 @@ import { useAuth, auth } from "../Firebase/Auth";
 import UserOrderStatus from './UserOrderStatus';
 
 const UserDashboard = () => {
-  const { User, UID } = useAuth();
+  const { User } = useAuth();
   const [user, setUser] = useState({ name: "", email: "", profilePicture: "" });
   const [loading, setLoading] = useState(true);
   const [showChangePassword, setShowChangePassword] = useState(false);
@@ -76,6 +76,12 @@ const UserDashboard = () => {
     setNewPassword("");
     setConfirmPassword("");
   };
+
+  if(loading){
+    return (
+      <div className="mx-auto mt-10  w-20 h-20 rounded-full border-b-4 border-blue-400 animate-spin"></div>
+    );
+  }
 
   if(user.name === "" || user.email === "" || user.profilePicture === ""){
     return (
