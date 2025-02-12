@@ -92,7 +92,7 @@ const GenreMain = () => {
                             if(!UID){
                               navigate("/login");
                             }else{
-                              await moveToWishlist(UID, book.ISBN);
+                              await moveToWishlist(book.ISBN);
                             }
                           }}
                         >
@@ -113,7 +113,7 @@ const GenreMain = () => {
                             if(!UID){
                               navigate("/login");
                             }else{
-                              await addToCart(UID, book.ISBN, 1);
+                              await addToCart(book.ISBN, 1);
                             }
                           }}
                         >
