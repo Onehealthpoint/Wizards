@@ -78,7 +78,7 @@ const UserOrderStatus = () => {
       return
     }
     try {
-      await AddToCart(UID, ISBN, Qty)
+      await AddToCart(UID, ISBN, qty)
       setCartClicked((prevState) => ({ ...prevState, [ISBN]: true }))
     } catch (error) {
       console.error("Error adding to cart:", error)
