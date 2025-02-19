@@ -10,11 +10,13 @@ import { AddToWishlist } from "../Firebase/WishlistCRUD"
 import heartAnimation from "../Animation/Wish.json"
 import checkAnimation from "../Animation/Check.json"
 import BookDetailsModal from "../HomePageComponents/BookDetailModel"
-import { Link, useParams } from "react-router-dom"
+import { Link, useParams, useNavigate } from "react-router-dom"
 import loaderAnimation from "../Animation/Loading.json" // Import loader animation
 import Layout from "../Layout/Layout"
 
 const GenreMain = () => {
+  const navigate = useNavigate()
+
   const { User, UID } = useAuth()
   const { genre } = useParams() // Get the genre from the URL parameters
   const [books, setBooks] = useState([])
@@ -42,8 +44,8 @@ const GenreMain = () => {
     setWishlistClicked((prevState) => ({ ...prevState, [ISBN]: true }))
   }
 
-  const addToCart = async (ISBN) => {
-    await AddToCart(UID, ISBN, 1)
+  const addToCart = async (ISBN, qty) => {
+    await AddToCart(UID, ISBN, qty)
     setCartClicked((prevState) => ({ ...prevState, [ISBN]: true }))
   }
 
@@ -86,7 +88,13 @@ const GenreMain = () => {
                       <div className="flex justify-end space-x-2" onClick={(e) => e.stopPropagation()}>
                         <button
                           className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors duration-300"
-                          onClick={() => moveToWishlist(book.ISBN)}
+                          onClick={async() => {
+                            if(!UID){
+                              navigate("/login");
+                            }else{
+                              await moveToWishlist(book.ISBN);
+                            }
+                          }}
                         >
                           {wishlistClicked[book.ISBN] ? (
                             <Lottie
@@ -101,7 +109,13 @@ const GenreMain = () => {
                         </button>
                         <button
                           className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors duration-300"
-                          onClick={() => addToCart(book.ISBN)}
+                          onClick={async() => {
+                            if(!UID){
+                              navigate("/login");
+                            }else{
+                              await addToCart(book.ISBN, 1);
+                            }
+                          }}
                         >
                           {cartClicked[book.ISBN] ? (
                             <Lottie
@@ -128,7 +142,7 @@ const GenreMain = () => {
           <BookDetailsModal
             book={selectedBook}
             UID={UID}
-            username={User.displayName}
+            username={User?.displayName}
             wishlistClicked={wishlistClicked}
             cartClicked={cartClicked}
             onClose={closeBookDetails}

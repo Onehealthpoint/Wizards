@@ -71,8 +71,8 @@ export const SearchMain = ({ username, wishlistClicked, cartClicked, onAddToWish
     setWishlistClickedState((prevState) => ({ ...prevState, [ISBN]: true }))
   }
 
-  const addToCart = async (ISBN) => {
-    await AddToCart(UID, ISBN, 1)
+  const addToCart = async (ISBN, qty) => {
+    await AddToCart(UID, ISBN, qty)
     setCartClickedState((prevState) => ({ ...prevState, [ISBN]: true }))
   }
 
@@ -124,7 +124,7 @@ export const SearchMain = ({ username, wishlistClicked, cartClicked, onAddToWish
         <BookDetailModel
           book={selectedBook}
           UID={UID}
-          username={User.displayName}
+          username={User?.displayName}
           wishlistClicked={wishlistClickedState}
           cartClicked={cartClickedState}
           onClose={closeBookDetails}

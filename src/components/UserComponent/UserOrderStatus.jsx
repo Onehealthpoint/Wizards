@@ -6,7 +6,7 @@ import { useAuth } from "../Firebase/Auth"
 import { Loader } from "../Loader/Loader"
 import { Link } from "react-router-dom"
 import { GetBookNameByISBN } from "../Firebase/BookCRUD"
-import { SearchBooksByTitlev2 } from "../Firebase/SearchBooks"
+import { SearchBooksByTitle } from "../Firebase/SearchBooks"
 import { AddToWishlist } from "../Firebase/WishlistCRUD"
 import { AddToCart } from "../Firebase/CartCRUD"
 import { AddReview, FetchReviews } from "../Firebase/ReviewCRUD"
@@ -46,7 +46,7 @@ const UserOrderStatus = () => {
 
   const handleBookNameClick = async (name) => {
     try {
-      const books = await SearchBooksByTitlev2(name)
+      const books = await SearchBooksByTitle(name)
       if (books.length > 0) {
         setSelectedBook(books[0])
       }
@@ -65,20 +65,20 @@ const UserOrderStatus = () => {
       return
     }
     try {
-      await AddToWishlist(UID, ISBN)
+      await AddToWishlist(ISBN)
       setWishlistClicked((prevState) => ({ ...prevState, [ISBN]: true }))
     } catch (error) {
       console.error("Error adding to wishlist:", error)
     }
   }
 
-  const addToCart = async (ISBN) => {
+  const addToCart = async (ISBN, qty) => {
     if (!UID) {
       console.error("User ID is undefined")
       return
     }
     try {
-      await AddToCart(UID, ISBN, 1)
+      await AddToCart(UID, ISBN, qty)
       setCartClicked((prevState) => ({ ...prevState, [ISBN]: true }))
     } catch (error) {
       console.error("Error adding to cart:", error)

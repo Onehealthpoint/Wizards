@@ -8,10 +8,12 @@ import { AddToWishlist } from "../Firebase/WishlistCRUD"
 import heartAnimation from "../Animation/Wish.json"
 import checkAnimation from "../Animation/Check.json"
 import BookDetailsModal from "./BookDetailModel"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import loaderAnimation from "../Animation/Loading.json" // Import loader animation
 
 const HomeComponent = () => {
+  const navigate = useNavigate()
+
   const { User, UID } = useAuth()
   const [books, setBooks] = useState([])
   const [wishlistClicked, setWishlistClicked] = useState({})
@@ -34,8 +36,8 @@ const HomeComponent = () => {
     setWishlistClicked((prevState) => ({ ...prevState, [ISBN]: true }))
   }
 
-  const addToCart = async (ISBN) => {
-    await AddToCart(UID, ISBN, 1)
+  const addToCart = async (ISBN, qty) => {
+    await AddToCart(UID, ISBN, qty)
     setCartClicked((prevState) => ({ ...prevState, [ISBN]: true }))
   }
 
@@ -77,7 +79,13 @@ const HomeComponent = () => {
                     <div className="flex justify-end space-x-2" onClick={(e) => e.stopPropagation()}>
                       <button
                         className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors duration-300"
-                        onClick={() => moveToWishlist(book.ISBN)}
+                        onClick={async() => {
+                          if(!UID){
+                            navigate("/login");
+                          }else{
+                            await moveToWishlist(book.ISBN);
+                          }
+                        }}
                       >
                         {wishlistClicked[book.ISBN] ? (
                           <Lottie
@@ -92,7 +100,13 @@ const HomeComponent = () => {
                       </button>
                       <button
                         className="bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors duration-300"
-                        onClick={() => addToCart(book.ISBN)}
+                        onClick={async() => {
+                          if(!UID){
+                            navigate("/login");
+                          }else{
+                            await addToCart(book.ISBN, 1);
+                          }
+                        }}
                       >
                         {cartClicked[book.ISBN] ? (
                           <Lottie

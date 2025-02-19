@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { MinusIcon, PlusIcon, ShoppingCartIcon, HeartIcon, TrashIcon, CreditCardIcon, BanknoteIcon, SaveIcon, TruckIcon } from "lucide-react";
+import { MinusIcon, PlusIcon, ShoppingCartIcon, HeartIcon, TrashIcon, CreditCardIcon, BanknoteIcon, TruckIcon } from "lucide-react";
 import { FetchCart, RemoveFromCart, UpdateCart } from "../Firebase/CartCRUD";
 import { AddTransaction } from "../Firebase/Transactions";
 import { AddToWishlist } from "../Firebase/WishlistCRUD";
@@ -30,7 +30,7 @@ const CartComponent = () => {
 
     const setEmpty = () => {
       setPaymentMethod("");
-      setName(`${User.displayName}`);
+      setName(`${User?.displayName || ""}`);
       setAddress("");
       setPhone("");
       setPurchaseType("");
@@ -61,15 +61,17 @@ const CartComponent = () => {
       loadCartItems();
     }, [UID]);
   
-    const updateQuantity = (ISBN, newQuantity) => {
-        setCartItems(
-            cartItems.map((book) => (book.ISBN === ISBN ? { ...book, quantity: Math.max(1, Math.min(10, newQuantity)) } : book)),
-        );
-    };
+    const updateQuantity = async(ISBN, newQuantity) => {
+        const qty = Math.max(1, Math.min(10, newQuantity));
 
-    const saveQuantity = async(ISBN, newQuantity) => {
-        await UpdateCart(UID, ISBN, newQuantity);
-        alert("Quantity saved successfully");
+        if(qty === cartItems.find((book) => book.ISBN === ISBN).quantity){
+          return;
+        }
+
+        await UpdateCart(UID, ISBN, qty);
+        setCartItems(
+            cartItems.map((book) => (book.ISBN === ISBN ? { ...book, quantity: qty } : book)),
+        );
     };
   
     const buyItem = (ISBN) => {
@@ -229,12 +231,6 @@ const CartComponent = () => {
                             className="bg-gray-200 text-gray-800 p-1 rounded"
                           >
                             <PlusIcon className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => saveQuantity(book.ISBN, book.quantity)}
-                            className="bg-green-500 text-white p-1 rounded"
-                          >
-                            <SaveIcon className="w-4 h-4" />
                           </button>
                         </div>
                       </div>
