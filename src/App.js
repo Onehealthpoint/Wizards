@@ -15,7 +15,7 @@ import SearchByAuthor from "./components/HomePageComponents/SearchByAuthor";
 import GenreMain from "./components/Genre/GenreMain";
 import DeliveryPage from "./pages/DeliveryPage";
 import UserOrderPage from "./pages/UserOrderPage";
-import AboutUsComponent from "./components/AboutUsComponent";
+import AboutUsComponent from "./components/AboutUsComponent/AboutUsComponent";
 
 
 
