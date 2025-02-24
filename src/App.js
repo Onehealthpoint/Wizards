@@ -15,6 +15,8 @@ import SearchByAuthor from "./components/HomePageComponents/SearchByAuthor";
 import GenreMain from "./components/Genre/GenreMain";
 import DeliveryPage from "./pages/DeliveryPage";
 import UserOrderPage from "./pages/UserOrderPage";
+import AboutUsComponent from "./components/AboutUsComponent/AboutUsComponent";
+
 
 
 function App() {
@@ -35,6 +37,7 @@ function App() {
           <Route path="/searchbygenre/:genre" element={<GenreMain />} />
           <Route path="/Delivery" element={<DeliveryPage />} />
           <Route path="/UserOrdersPage" element={<UserOrderPage/>} />
+          <Route path="/about" element={<AboutUsComponent />} />
         </Routes>
       </Router>
     </div>
