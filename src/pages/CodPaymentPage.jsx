@@ -1,10 +1,10 @@
 import Layout from "../components/Layout/Layout";
-import PaymentComponent from "../components/PaymentPageComponents/PaymentComponent";
+import CodPaymentComponent from "../components/PaymentPageComponents/CodPaymentComponent";
 
 const PaymentPage = () => {
     return (
         <Layout>
-            <PaymentComponent />
+            <CodPaymentComponent />
         </Layout>
     );
 };

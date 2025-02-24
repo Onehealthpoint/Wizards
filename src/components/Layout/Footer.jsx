@@ -13,18 +13,18 @@ const Footer = () => {
         <div className="flex flex-col gap-2 mx-auto">
           <h4 className="text-lg font-bold mb-4">Quick Links</h4>
           <Link to={"/"}>Home</Link>
-          <Link to={"/about"}>About</Link>
+          <Link to="/about">About</Link>
           <Link to={"/services"}>Services</Link>
           <Link to={"/contact"}>Contact</Link>
         </div>
         <div className="">
           <h4 className="text-lg font-bold mb-4">Contact</h4>
-          <p className="text-sm">Email: info@example.com</p> {/*svg icon*/}
+          <p className="text-sm">Email: info@wizards.com</p>
           <p className="text-sm">Phone: +123 456 789</p>
         </div>
       </div>
       <div className="text-center mt-8 border-t border-gray-700 pt-4">
-        <p className="text-sm">&copy; {new Date().getFullYear()} Your Company. All rights reserved.</p>
+        <p className="text-sm">&copy; {new Date().getFullYear()} WIZARDS. All rights reserved.</p>
       </div>
     </footer>
   );

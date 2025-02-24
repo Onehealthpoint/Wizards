@@ -1,72 +1,85 @@
 import { Link } from "react-router-dom";
 import SearchBar from "../SearchBar/SearchBar";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "../Firebase/Auth";
-import { useState, useEffect } from "react";
+import { signOut } from "firebase/auth";
+import { useAuth, auth } from "../Firebase/Auth";
+import { LogOut, CircleUserRound, User2, ShoppingBag, HomeIcon } from "lucide-react";
+import Lottie from "lottie-react";
+import BooksAni from "../Animation/BooksAni.json";
 
 
 const Navbar = () => {
-    const [LoggedIn, setLoggedIn] = useState(false);
-
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-          if (user) {
-            setLoggedIn(true);
-          } else {
-            setLoggedIn(false);
-          }
-        });
-        return () => unsubscribe();
-      }, []);
+    const { User } = useAuth();
 
     const navList = (
-        <ul className="flex space-x-3 text-white font-medium text-md px-5 ">
+        <ul className="flex space-x-3 text-white font-medium text-md px-5 lg:gap-3">
             <li>
-                <Link to={'/'}>Home</Link>
+                <Link 
+                    to={'/'}
+                >
+                    <HomeIcon size={30} />
+                </Link>
             </li>
-
-            <li>
-                <Link to={'/category'}>Category</Link>
-            </li>
-
             {
-                LoggedIn? (
+                User? (
                     <li>
-                        <Link to={'/'} onClick={()=>{signOut(auth)}}>Logout</Link>
+                        <Link 
+                            to={'/'} 
+                            onClick={()=>{
+                                signOut(auth);
+                            }}
+                        >
+                            <LogOut size={30} />
+                        </Link>
                     </li>
                 ) : (
                     <li>
-                        <Link to={'/login'}>Signup</Link>
+                        <Link 
+                            to={'/login'}
+                        >
+                            <CircleUserRound size={30} />
+                        </Link>
                     </li>
                 )
             }
 
-            <li>
-                <Link to={'/'}>User</Link>
-            </li>
+            {(User) && (
+                <>
+                    <li>
+                        <Link 
+                            to={'/User'}
+                        >
+                            <User2 size={30} />
+                        </Link>
+                    </li>
 
-            <li>
-                <Link to={'/cart'}>
-                    Cart(0)
-                </Link>
-            </li>
+                    <li>
+                        <Link 
+                            to={'/cart'}
+                        >
+                            <ShoppingBag size={30} />
+                        </Link>
+                    </li>
+                </>
+            )}
         </ul>
     );
 
     return (
-        <nav className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 sticky top-0 z-50">
+        <nav className="bg-gradient-to-b from-purple-700 to-fuchsia-500 sticky top-0 z-50">
             <div className="lg:flex lg:justify-between items-center py-3 lg:px-3 ">
-                <div className="left py-3 lg:py-0">
+            <div className="left flex items-center gap-2 lg:gap-4">
+                <Lottie animationData={BooksAni} style={{ width: "50px", height: "50px" }} />
                     <Link to={'/'}>
                         <h2 className="font-bold text-white text-2xl text-center">WIZARDS'</h2>
                     </Link>
                 </div>
 
-                <div className="right flex justify-center mb-4 lg:mb-0">
+                <div className="right flex justify-center items-center mb-4 lg:mb-0 lg:gap-4">
                     {navList}
+                    <SearchBar />
                 </div>
 
-                <SearchBar />
+                
             </div>
         </nav>
     );
