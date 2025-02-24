@@ -1,10 +1,10 @@
-import Layout from "../components/Layout/Layout";
 import LoginComponent from "../components/LoginPageComponents/LoginComponent";
+import Layout from "../components/Layout/Layout";
 
-const LoginPage = ({auth}) => {
+const LoginPage = () => {
     return (
         <Layout>
-            <LoginComponent auth={auth}/>
+            <LoginComponent />
         </Layout>
     );
 };
