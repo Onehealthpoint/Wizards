@@ -146,9 +146,6 @@ const ClientComponent = () => {
       <div className="min-h-screen bg-gray-100 p-8">
         <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="p-8">
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">User Dashboard</h1>
-
-
             <div className="flex flex-col md:flex-row justify-between mb-8">
               <div className="flex flex-col md:flex-row items-center md:items-start mb-4 md:mb-0">
                 <img
@@ -244,12 +241,6 @@ const ClientComponent = () => {
               )}
             </div>
             <h1 className="text-2xl font-bold mb-4">My Whislist</h1>
-            <div className="flex justify-between items-center mb-4">
-                <div></div> {/* Empty div to push the link to the right */}
-                <Link to="/UserOrdersPage" className="font-italic hover:text-blue-500">
-                    My Orders
-                </Link>
-            </div>
             {(loading) && (
                 <div className="text-center py-8">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>

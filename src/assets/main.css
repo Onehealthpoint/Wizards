@@ -611,6 +611,9 @@ video {
 .mr-2 {
   margin-right: 0.5rem;
 } 
+.mr-4 {
+  margin-right: 1rem;
+} 
 .mt-1 {
   margin-top: 0.25rem;
 } 
@@ -685,6 +688,9 @@ video {
 } 
 .h-full {
   height: 100%;
+} 
+.h-screen {
+  height: 100vh;
 } 
 .max-h-60 {
   max-height: 15rem;
@@ -766,6 +772,9 @@ video {
 } 
 .max-w-md {
   max-width: 28rem;
+} 
+.flex-1 {
+  flex: 1 1 0%;
 } 
 .flex-grow {
   flex-grow: 1;

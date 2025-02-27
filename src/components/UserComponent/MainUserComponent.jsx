@@ -1,9 +1,9 @@
 import ClientComponent from './ClientComponent';
 import AdminComponent from './AdminComponent';
-import { UserLoader } from '../Loader/Loader';
 import { useState, useEffect } from 'react';
 import { IsAdmin } from '../Firebase/Admin';
 import { useAuth } from '../Firebase/Auth';
+import UltimateUser from './UltimateUser';
 
 const MainUserComponent = () => {
     const { UID } = useAuth();
@@ -30,7 +30,7 @@ const MainUserComponent = () => {
 
     return (
         <div>
-            {admin ? <AdminComponent/> : <ClientComponent/>}
+            {admin ? <AdminComponent/> : <UltimateUser/>}
         </div>
     );
 };

@@ -1,5 +1,5 @@
 import Cards from "./CartComponent";
-import Delivery from "../Delivery/DeliveryMain";
+import Delivery from "../AdminDash/AdminDashboard";
 import { useState, useEffect } from 'react';
 import { IsAdmin } from '../Firebase/Admin';
 import { useAuth } from '../Firebase/Auth';
