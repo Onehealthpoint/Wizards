@@ -11,6 +11,7 @@ const HomePage = () => {
             <GenreComponent />
             <HomeComponent />
         </Layout>
+
     );
 };
 
