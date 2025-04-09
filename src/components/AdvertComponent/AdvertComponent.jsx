@@ -15,8 +15,8 @@ export const GoogleAdbanner = () => {
 
 const Adbanner = () => {
     const AdList = [
-        "/images/Ad1.gif", 
-        "/images/Ad2.gif"
+        "/Images/Ad1.gif", 
+        "/Images/Ad2.gif"
     ];
     const index = Math.floor(Math.random() * AdList.length);
     const Ad = AdList[index];
