@@ -25,7 +25,7 @@ const HomeComponent = () => {
     const fetchBooks = async () => {
       setLoading(true) // Set loading to true before fetching
       const booksData = await FetchAllBooks()
-      booksData.sort(() => Math.random() - 0.5)
+      booksData.sort(() => Math.random() - 0.5) // Shuffle the books
       setBooks(booksData)
       setLoading(false) // Set loading to false after fetching
     }
