@@ -93,8 +93,6 @@ const UserDashboard = () => {
       <div className="min-h-screen bg-gray-100 p-8">
         <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="p-8">
-            <h1 className="text-3xl font-bold text-gray-800 mb-6">User Dashboard</h1>
-
             <div className="flex flex-col md:flex-row justify-between mb-8">
               <div className="flex flex-col md:flex-row items-center md:items-start mb-4 md:mb-0">
                 <img

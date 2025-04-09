@@ -18,7 +18,7 @@ const GenreMain = () => {
   const navigate = useNavigate()
 
   const { User, UID } = useAuth()
-  const { genre } = useParams() // Get the genre from the URL parameters
+  const { genre } = useParams() 
   const [books, setBooks] = useState([])
   const [wishlistClicked, setWishlistClicked] = useState({})
   const [cartClicked, setCartClicked] = useState({})
@@ -36,7 +36,7 @@ const GenreMain = () => {
   }, [genre])
 
   useEffect(() => {
-    window.scrollTo(0, 0) // Scroll to the top when the component mounts
+    window.scrollTo(0, 0)
   }, [])
 
   const moveToWishlist = async (ISBN) => {

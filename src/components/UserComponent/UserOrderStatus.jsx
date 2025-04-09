@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { FetchTransactions } from "../Firebase/Transactions"
 import { useAuth } from "../Firebase/Auth"
 import { Loader } from "../Loader/Loader"
-import { Link } from "react-router-dom"
 import { GetBookNameByISBN } from "../Firebase/BookCRUD"
 import { SearchBooksByTitle } from "../Firebase/SearchBooks"
 import { AddToWishlist } from "../Firebase/WishlistCRUD"
@@ -156,12 +155,6 @@ const UserOrderStatus = () => {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">My Orders</h1>
-      <div className="flex justify-between items-center mb-4">
-        <div></div> {/* Empty div to push the link to the right */}
-        <Link to="/User" className="font-italic hover:text-blue-500">
-          My WishList
-        </Link>
-      </div>
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
           {error}
