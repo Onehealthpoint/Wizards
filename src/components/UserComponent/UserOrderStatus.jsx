@@ -11,6 +11,7 @@ import { AddToCart } from "../Firebase/CartCRUD"
 import { AddReview, FetchReviews } from "../Firebase/ReviewCRUD"
 import { Eye, X } from "lucide-react"
 import BookDetailModel from "../HomePageComponents/BookDetailModel"
+import { AddOrUpdateReturn } from "../Firebase/ReturnCRUD"
 
 const UserOrderStatus = () => {
   const [orders, setOrders] = useState([])
@@ -85,34 +86,54 @@ const UserOrderStatus = () => {
   }
 
   const handleAddReview = async () => {
-    console.log("handleAddReview called");
-    console.log("newReview:", newReview);
-    console.log("newRating:", newRating);
-    console.log("User:", User);
-    console.log("selectedBook:", selectedBook);
+    console.log("handleAddReview called")
+    console.log("newReview:", newReview)
+    console.log("newRating:", newRating)
+    console.log("User:", User)
+    console.log("selectedBook:", selectedBook)
 
     if (newReview.trim() && newRating > 0 && User && User.displayName && selectedBook) {
-      setIsSubmitting(true);
-      setShowSubmitAnimation(true);
+      setIsSubmitting(true)
+      setShowSubmitAnimation(true)
       try {
-        await AddReview(UID, User.displayName, selectedBook.ISBN, newReview, newRating);
-        const updatedReviews = await FetchReviews(selectedBook.ISBN);
-        setReviews(updatedReviews);
-        setNewReview("");
-        setNewRating(0);
-        console.log("Review added successfully");
+        await AddReview(UID, User.displayName, selectedBook.ISBN, newReview, newRating)
+        const updatedReviews = await FetchReviews(selectedBook.ISBN)
+        setReviews(updatedReviews)
+        setNewReview("")
+        setNewRating(0)
+        console.log("Review added successfully")
       } catch (error) {
-        console.error("Error adding review: ", error);
+        console.error("Error adding review: ", error)
       } finally {
         setTimeout(() => {
-          setIsSubmitting(false);
-          setShowSubmitAnimation(false);
-        }, 2000);
+          setIsSubmitting(false)
+          setShowSubmitAnimation(false)
+        }, 2000)
       }
     } else {
-      console.error("Invalid review data or user information");
+      console.error("Invalid review data or user information")
     }
-  };
+  }
+
+  const handleReturnBook = async (ISBN) => {
+    if (!UID) {
+      console.error("User ID is undefined")
+      return
+    }
+    try {
+      const returnData = {
+        ISBN: ISBN,
+        UID: UID,
+        Status: "Pending",
+        Remark: "",
+      }
+      await AddOrUpdateReturn(returnData)
+      alert("Return request submitted successfully")
+    } catch (error) {
+      console.error("Error submitting return request:", error)
+    }
+  }
+
   useEffect(() => {
     if (selectedBook) {
       const fetchReviews = async () => {
@@ -181,10 +202,7 @@ const UserOrderStatus = () => {
                 <td className="px-4 py-2 ">{order.transaction_code || "N/A"}</td>
                 <td className="px-4 py-2">{order.paymentMethod || "N/A"}</td>
                 <td className="px-4 py-2">
-                  <button
-                    className="text-blue-500 hover:text-blue-700"
-                    onClick={() => handleViewDetails(order)}
-                  >
+                  <button className="text-blue-500 hover:text-blue-700" onClick={() => handleViewDetails(order)}>
                     <Eye className="inline-block w-5 h-5" />
                   </button>
                 </td>
@@ -204,16 +222,39 @@ const UserOrderStatus = () => {
               </button>
             </div>
             <div className="mb-4">
-              <p><strong>Order ID:</strong> {selectedOrder.transaction_uuid || "N/A"}</p>
-              <p><strong>Status:</strong> {selectedOrder.status || "Pending"}</p>
-              <p><strong>Amount:</strong> {selectedOrder.amount || "N/A"}</p>
-              <p><strong>Code:</strong> {selectedOrder.transaction_code || "N/A"}</p>
-              <p><strong>Payment Method:</strong> {selectedOrder.paymentMethod || "N/A"}</p>
-              <p><strong>Book Names:</strong></p>
+              <p>
+                <strong>Order ID:</strong> {selectedOrder.transaction_uuid || "N/A"}
+              </p>
+              <p>
+                <strong>Status:</strong> {selectedOrder.status || "Pending"}
+              </p>
+              <p>
+                <strong>Amount:</strong> {selectedOrder.amount || "N/A"}
+              </p>
+              <p>
+                <strong>Code:</strong> {selectedOrder.transaction_code || "N/A"}
+              </p>
+              <p>
+                <strong>Payment Method:</strong> {selectedOrder.paymentMethod || "N/A"}
+              </p>
+              <p>
+                <strong>Book Names:</strong>
+              </p>
               <ul>
                 {bookNames.map((name, i) => (
-                  <li key={i} onClick={() => handleBookNameClick(name)} className="cursor-pointer text-blue-500 hover:underline">
-                    {name}
+                  <li key={i} className="flex items-center justify-between mb-2">
+                    <span
+                      onClick={() => handleBookNameClick(name)}
+                      className="cursor-pointer text-blue-500 hover:underline"
+                    >
+                      {name}
+                    </span>
+                    <button
+                      onClick={() => handleReturnBook(selectedOrder.ISBN[i])}
+                      className="bg-red-500 hover:bg-red-600 text-white text-sm py-1 px-2 rounded"
+                    >
+                      Return
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -229,20 +270,20 @@ const UserOrderStatus = () => {
       )}
       {/* Render the modal if a book is selected */}
       {selectedBook && (
-    <BookDetailModel
-    book={selectedBook}
-    UID={UID}
-    username={User.displayName}
-    wishlistClicked={wishlistClicked}
-    cartClicked={cartClicked}
-    onClose={closeBookDetails}
-    onAddToWishlist={moveToWishlist}
-    onAddToCart={addToCart}
-    />
+        <BookDetailModel
+          book={selectedBook}
+          UID={UID}
+          username={User.displayName}
+          wishlistClicked={wishlistClicked}
+          cartClicked={cartClicked}
+          onClose={closeBookDetails}
+          onAddToWishlist={moveToWishlist}
+          onAddToCart={addToCart}
+        />
       )}
     </div>
-  );
-};
+  )
+}
 
 export default UserOrderStatus
 

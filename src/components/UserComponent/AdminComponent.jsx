@@ -163,7 +163,7 @@ const AdminComponent = () => {
         <div className="max-w-6xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="p-8">
             <div className="flex justify-between items-center mb-6">
-              <h1 className="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+              <h1 className="text-3xl font-bold text-gray-800">Uploads and Books</h1>
               <p className="text-gray-600 italic font-light">Welcome, {adminName}</p>
             </div>
   
