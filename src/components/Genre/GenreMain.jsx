@@ -66,7 +66,7 @@ const GenreMain = () => {
             {loading ? ( // Show loader if loading is true
               <Lottie animationData={loaderAnimation} loop autoplay style={{ width: 200, height: 200 }} />
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 w-full">
                 {books.map((book, index) => (
                   <div
                     key={index}

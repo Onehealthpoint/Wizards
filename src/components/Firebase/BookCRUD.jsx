@@ -64,16 +64,17 @@ export const RemoveBook = async (bookId) => {
         const q = query(collection(db, "Books"), where("ISBN", "==", bookId));
         const q_cart = query(collection(db, "Carts"), where("ISBN", "==", bookId));
         const q_wish = query(collection(db, "Wishlist"), where("ISBN", "==", bookId));
+        const q_reviews = query(collection(db, "Reviews", where("ISBN", "==", bookId)));
         const querySnapshot = await getDocs(q);
         const querySnapshot_cart = await getDocs(q_cart);
         const querySnapshot_wish = await getDocs(q_wish);
+        const querySnapshot_review = await getDocs(q_reviews);
         if(querySnapshot.size === 0){
             console.log("Book not found");
             return;
         }
         for (const docObj of querySnapshot.docs) {
-            await deleteDoc(doc(db, "Books", docObj.id));
-            
+            await deleteDoc(doc(db, "Books", docObj.id));   
         }
         for (const docObj of querySnapshot_cart.docs) {
             await deleteDoc(doc(db, "Carts", docObj.id));
@@ -81,23 +82,46 @@ export const RemoveBook = async (bookId) => {
         for (const docObj of querySnapshot_wish.docs) {
             await deleteDoc(doc(db, "Wishlist", docObj.id));
         }
+        for (const docObj of querySnapshot_review.docs) {
+            await deleteDoc(doc(db, "Reviews", docObj.id));
+        }
     }catch(e){
         console.error("Error CRUD:RemoveBook ==> ", e);
     }
 };
+
+export const GetBookByISBN = async (ISBN) => {
+    try {
+        const q = query(collection(db, "Books"), where("ISBN", "==", ISBN));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+            const bookDoc = querySnapshot.docs[0];
+            console.log("Book found: ", bookDoc.data());
+            return bookDoc.data();
+        } else {
+            console.log("No such document!");
+            return null;
+        }
+    } catch (e) {
+        console.error("Error CRUD:GetBookByISBN ==> ", e);
+        return null;
+    }
+};
+
 export const GetBookNameByISBN = async (ISBN) => {
     try {
         const q = query(collection(db, "Books"), where("ISBN", "==", ISBN));
         const querySnapshot = await getDocs(q);
         if (!querySnapshot.empty) {
             const bookDoc = querySnapshot.docs[0];
+            console.log("Book found: ", bookDoc.data());
             return bookDoc.data().title;
         } else {
             console.log("No such document!");
             return null;
         }
     } catch (e) {
-        console.error("Error CRUD:GetBookNameByISBN ==> ", e);
+        console.error("Error CRUD:GetBookByISBN ==> ", e);
         return null;
     }
 };

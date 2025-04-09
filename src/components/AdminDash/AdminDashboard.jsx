@@ -12,6 +12,8 @@ const AdminDashboard = () => {
         return <DeliveryMain />
       case "return":
         return <ReturnMain />
+      case "settings":
+        return <div>Settings Page</div>
       default:
         return <DeliveryMain />
     }

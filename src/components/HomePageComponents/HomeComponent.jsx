@@ -25,6 +25,7 @@ const HomeComponent = () => {
     const fetchBooks = async () => {
       setLoading(true) // Set loading to true before fetching
       const booksData = await FetchAllBooks()
+      booksData.sort(() => Math.random() - 0.5)
       setBooks(booksData)
       setLoading(false) // Set loading to false after fetching
     }
@@ -58,7 +59,7 @@ const HomeComponent = () => {
             <Lottie animationData={loaderAnimation} loop autoplay style={{ width: 200, height: 200 }} />
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-              {books.slice(0, 10).map((book, index) => (
+              {books.slice(0, 20).map((book, index) => (
                 <div
                   key={index}
                   className="bg-white rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:scale-105 flex flex-col cursor-pointer"

@@ -1,4 +1,6 @@
 import { Filter } from 'bad-words';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 export const IsBookValid = (book) => {
     console.log(book);
@@ -100,3 +102,14 @@ export const generateRandomCode = (length=7) => {
 
     return result;
 };
+
+
+export function ScrollToTop() {
+    const { pathname } = useLocation();
+  
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, [pathname]);
+  
+    return null;
+}

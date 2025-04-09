@@ -20,7 +20,7 @@ const genres = [
 
 const GenreComponent = () => {
   return (
-      <div className="flex justify-center items-center w-full h-full p-4">
+      <div className="flex justify-center items-center w-dvw h-full p-4 overflow-auto">
         {genres.map((genre, index) => (
           <Link
             key={index}

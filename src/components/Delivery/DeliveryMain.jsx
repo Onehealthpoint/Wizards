@@ -3,7 +3,7 @@ import { readAllDeliveryStatuses } from "../Firebase/DeliveryCRUD"
 import { GetBookNameByISBN } from "../Firebase/BookCRUD"
 import { Loader } from "../Loader/Loader"
 import { db } from "../Firebase/Init"
-import { doc, updateDoc, deleteDoc, collection, query, where, getDocs } from "firebase/firestore"
+import { doc, deleteDoc, collection, query, where, getDocs } from "firebase/firestore"
 import { TrashIcon, PencilIcon } from "lucide-react"
 import EditDeliveryModal from "./EditDeliveryModal"
 import DeleteConfirmationModal from "./DeleteConfirmationModal" // Import the new modal
@@ -45,6 +45,7 @@ const DeliveryMain = () => {
                             const bookNameResults = await Promise.all(bookNamePromises);
                             bookNames = bookNameResults.filter(name => name).join(', ');
                         }
+                        
 
                         return {
                             ...delivery,

@@ -146,7 +146,7 @@ const UserOrderStatus = () => {
       }
       fetchReviews()
     }
-  }, [selectedBook])
+  }, [selectedBook, setReviews])
 
   useEffect(() => {
     const fetchOrders = async () => {

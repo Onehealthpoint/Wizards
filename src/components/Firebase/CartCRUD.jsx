@@ -35,7 +35,7 @@ export const AddToCart = async (UID, ISBN, qty) => {
             UID: UID,
             ISBN: ISBN,
             quantity: qty
-        });
+        }) 
     }catch(e){
         console.error("Error CRUD:AddToCart ==> ", e);
     }

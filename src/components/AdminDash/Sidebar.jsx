@@ -5,7 +5,7 @@ const Sidebar = ({ setActivePage, activePage }) => {
   const menuItems = [
     { id: "delivery", icon: TruckIcon, label: "Delivery" },
     { id: "return", icon: TruckIcon, label: "return" },
-    { id: "settings", icon: SettingsIcon, label: "Settings" },
+   // { id: "settings", icon: SettingsIcon, label: "Settings" },
   ]
 
   return (

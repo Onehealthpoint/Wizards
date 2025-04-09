@@ -1,5 +1,5 @@
 // Imports for Routing
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes  } from "react-router-dom";
 
 // Imports for Web-Pages
 import CartPage from "./pages/CartPage";
@@ -16,13 +16,13 @@ import GenreMain from "./components/Genre/GenreMain";
 import DeliveryPage from "./pages/DeliveryPage";
 import UserOrderPage from "./pages/UserOrderPage";
 import AboutUsComponent from "./components/AboutUsComponent/AboutUsComponent";
-
+import { ScrollToTop } from "./components/Helper/HelperFunctions";
 
 
 function App() {
   return (
-    <div>
       <Router>
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/category" element={<CategoryPage />} />
@@ -40,7 +40,6 @@ function App() {
           <Route path="/about" element={<AboutUsComponent />} />
         </Routes>
       </Router>
-    </div>
   );
 }
 
